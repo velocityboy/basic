@@ -1,0 +1,12 @@
+- two letter variables $ means string, else float
+- LET
+- READ/DATA
+- IF THEN ELSE with line numbers
+- GOTO
+- GOSUB/RETURN
+- ON GOTO/GOSUB
+- PRINT
+- INPUT
+- standard math functions
+- REM
+

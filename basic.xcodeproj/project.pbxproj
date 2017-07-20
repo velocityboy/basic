@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		7BD7CFEB1F202095001EEDB6 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7CFEA1F202095001EEDB6 /* main.c */; };
+		7BD7CFF71F2023DC001EEDB6 /* keyword.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7CFF61F2023DC001EEDB6 /* keyword.c */; };
+		7BD7CFFA1F202500001EEDB6 /* safemem.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7CFF81F202500001EEDB6 /* safemem.c */; };
+		7BD7CFFD1F2025B3001EEDB6 /* stringutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7CFFB1F2025B3001EEDB6 /* stringutil.c */; };
+		7BD7D0001F202800001EEDB6 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7CFFE1F202800001EEDB6 /* parser.c */; };
+		7BD7D0021F20290D001EEDB6 /* program.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0011F20290D001EEDB6 /* program.c */; };
+		7BD7D0051F2029B6001EEDB6 /* statement.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0031F2029B6001EEDB6 /* statement.c */; };
+		7BD7D0081F2068A4001EEDB6 /* print.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0061F2068A4001EEDB6 /* print.c */; };
+		7BD7D00B1F206D6F001EEDB6 /* expression.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0091F206D6F001EEDB6 /* expression.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +33,24 @@
 /* Begin PBXFileReference section */
 		7BD7CFE71F202095001EEDB6 /* basic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = basic; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BD7CFEA1F202095001EEDB6 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		7BD7CFF11F20211C001EEDB6 /* language.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = language.txt; sourceTree = "<group>"; };
+		7BD7CFF31F2021CA001EEDB6 /* test.bas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.bas; sourceTree = "<group>"; };
+		7BD7CFF41F202264001EEDB6 /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = program.h; sourceTree = "<group>"; };
+		7BD7CFF51F202311001EEDB6 /* keyword.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = keyword.h; sourceTree = "<group>"; };
+		7BD7CFF61F2023DC001EEDB6 /* keyword.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = keyword.c; sourceTree = "<group>"; };
+		7BD7CFF81F202500001EEDB6 /* safemem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = safemem.c; sourceTree = "<group>"; };
+		7BD7CFF91F202500001EEDB6 /* safemem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = safemem.h; sourceTree = "<group>"; };
+		7BD7CFFB1F2025B3001EEDB6 /* stringutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stringutil.c; sourceTree = "<group>"; };
+		7BD7CFFC1F2025B3001EEDB6 /* stringutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringutil.h; sourceTree = "<group>"; };
+		7BD7CFFE1F202800001EEDB6 /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parser.c; sourceTree = "<group>"; };
+		7BD7CFFF1F202800001EEDB6 /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		7BD7D0011F20290D001EEDB6 /* program.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = program.c; sourceTree = "<group>"; };
+		7BD7D0031F2029B6001EEDB6 /* statement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = statement.c; sourceTree = "<group>"; };
+		7BD7D0041F2029B6001EEDB6 /* statement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statement.h; sourceTree = "<group>"; };
+		7BD7D0061F2068A4001EEDB6 /* print.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = print.c; sourceTree = "<group>"; };
+		7BD7D0071F2068A4001EEDB6 /* print.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = print.h; sourceTree = "<group>"; };
+		7BD7D0091F206D6F001EEDB6 /* expression.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = expression.c; sourceTree = "<group>"; };
+		7BD7D00A1F206D6F001EEDB6 /* expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expression.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +83,25 @@
 		7BD7CFE91F202095001EEDB6 /* basic */ = {
 			isa = PBXGroup;
 			children = (
+				7BD7D0091F206D6F001EEDB6 /* expression.c */,
+				7BD7D00A1F206D6F001EEDB6 /* expression.h */,
+				7BD7CFF51F202311001EEDB6 /* keyword.h */,
+				7BD7CFF61F2023DC001EEDB6 /* keyword.c */,
+				7BD7CFF11F20211C001EEDB6 /* language.txt */,
 				7BD7CFEA1F202095001EEDB6 /* main.c */,
+				7BD7CFFE1F202800001EEDB6 /* parser.c */,
+				7BD7CFFF1F202800001EEDB6 /* parser.h */,
+				7BD7D0061F2068A4001EEDB6 /* print.c */,
+				7BD7D0071F2068A4001EEDB6 /* print.h */,
+				7BD7CFF41F202264001EEDB6 /* program.h */,
+				7BD7D0011F20290D001EEDB6 /* program.c */,
+				7BD7CFF81F202500001EEDB6 /* safemem.c */,
+				7BD7CFF91F202500001EEDB6 /* safemem.h */,
+				7BD7D0031F2029B6001EEDB6 /* statement.c */,
+				7BD7D0041F2029B6001EEDB6 /* statement.h */,
+				7BD7CFFB1F2025B3001EEDB6 /* stringutil.c */,
+				7BD7CFFC1F2025B3001EEDB6 /* stringutil.h */,
+				7BD7CFF31F2021CA001EEDB6 /* test.bas */,
 			);
 			path = basic;
 			sourceTree = "<group>";
@@ -120,6 +164,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7BD7CFEB1F202095001EEDB6 /* main.c in Sources */,
+				7BD7CFF71F2023DC001EEDB6 /* keyword.c in Sources */,
+				7BD7D0021F20290D001EEDB6 /* program.c in Sources */,
+				7BD7CFFD1F2025B3001EEDB6 /* stringutil.c in Sources */,
+				7BD7D0001F202800001EEDB6 /* parser.c in Sources */,
+				7BD7D0081F2068A4001EEDB6 /* print.c in Sources */,
+				7BD7CFFA1F202500001EEDB6 /* safemem.c in Sources */,
+				7BD7D0051F2029B6001EEDB6 /* statement.c in Sources */,
+				7BD7D00B1F206D6F001EEDB6 /* expression.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
