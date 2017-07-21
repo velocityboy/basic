@@ -17,6 +17,7 @@
 		7BD7D0081F2068A4001EEDB6 /* print.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0061F2068A4001EEDB6 /* print.c */; };
 		7BD7D00B1F206D6F001EEDB6 /* expression.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0091F206D6F001EEDB6 /* expression.c */; };
 		7BD7D00E1F21923F001EEDB6 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D00C1F21923F001EEDB6 /* value.c */; };
+		7BD7D0111F21BC77001EEDB6 /* runtime.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D00F1F21BC77001EEDB6 /* runtime.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,6 +55,8 @@
 		7BD7D00A1F206D6F001EEDB6 /* expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expression.h; sourceTree = "<group>"; };
 		7BD7D00C1F21923F001EEDB6 /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = value.c; sourceTree = "<group>"; };
 		7BD7D00D1F21923F001EEDB6 /* value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = value.h; sourceTree = "<group>"; };
+		7BD7D00F1F21BC77001EEDB6 /* runtime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = runtime.c; sourceTree = "<group>"; };
+		7BD7D0101F21BC77001EEDB6 /* runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = runtime.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,8 @@
 				7BD7D0071F2068A4001EEDB6 /* print.h */,
 				7BD7CFF41F202264001EEDB6 /* program.h */,
 				7BD7D0011F20290D001EEDB6 /* program.c */,
+				7BD7D00F1F21BC77001EEDB6 /* runtime.c */,
+				7BD7D0101F21BC77001EEDB6 /* runtime.h */,
 				7BD7CFF81F202500001EEDB6 /* safemem.c */,
 				7BD7CFF91F202500001EEDB6 /* safemem.h */,
 				7BD7D0031F2029B6001EEDB6 /* statement.c */,
@@ -168,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BD7D0111F21BC77001EEDB6 /* runtime.c in Sources */,
 				7BD7CFEB1F202095001EEDB6 /* main.c in Sources */,
 				7BD7CFF71F2023DC001EEDB6 /* keyword.c in Sources */,
 				7BD7D0021F20290D001EEDB6 /* program.c in Sources */,

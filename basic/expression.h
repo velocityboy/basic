@@ -14,5 +14,6 @@ struct expopnode
 
 expression *expression_parse(parser *prs);
 void expression_free(expression *exp);
+value *expression_evaluate(expression *exp);
 
 #endif /* expression_h */

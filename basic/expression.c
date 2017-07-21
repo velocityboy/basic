@@ -2,8 +2,9 @@
 #include <string.h>
 
 #include "expression.h"
-#include "safemem.h"
 #include "parser.h"
+#include "safemem.h"
+#include "stringutil.h"
 #include "value.h"
 
 typedef struct binop binop;
@@ -92,6 +93,14 @@ void expression_free(expression *exp)
     }
     free(exp);
 }
+
+/* Evaluate an expression
+ */
+value *expression_evaluate(expression *exp)
+{
+    return exp->root->evaluate(exp->root);
+}
+
 
 /* Parse top level of expression
  */
@@ -203,6 +212,7 @@ expopnode *parse_paren_term(parser *prs)
     switch (prs->token_type) {
     case TOK_STRING:
         text = parser_extract_token_text(prs);
+        strunquote(text);
         ret = alloc_literal(value_alloc_string(text));
         free(text);
         parse_next_token(prs);

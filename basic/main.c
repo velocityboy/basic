@@ -2,6 +2,7 @@
 
 #include "parser.h"
 #include "program.h"
+#include "runtime.h"
 
 int main(int argc, const char * argv[])
 {
@@ -23,6 +24,10 @@ int main(int argc, const char * argv[])
         fprintf(stderr, "parse failed.\n");
         return 1;
     }
+    
+    runtime *rt = runtime_alloc();
+    runtime_run(rt, pgm);
+    runtime_free(rt);
         
     return 0;
 }

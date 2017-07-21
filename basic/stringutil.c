@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "stringutil.h"
@@ -40,4 +41,21 @@ void strtrim(char *s)
     }
 }
 
-
+/* in place remove matching quotes if the string is quoted
+ */
+void strunquote(char *s)
+{
+    size_t len = strlen(s);
+    
+    if (len < 2) {
+        return;
+    }
+    
+    if (s[0] == '"' && s[len - 1] == '"') {
+        char *p;
+        for (p = s; p[2]; p++) {
+            p[0] = p[1];
+        }
+        *p = '\0';
+    }
+}

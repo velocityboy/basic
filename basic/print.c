@@ -1,8 +1,11 @@
+#include <stdio.h>
+
 #include "assert.h"
 #include "expression.h"
 #include "print.h"
 #include "safemem.h"
 #include "statement.h"
+#include "value.h"
 
 typedef struct print_node print_node;
 
@@ -44,4 +47,20 @@ void print_free(statement_body *body)
  */
 void print_execute(statement_body *body)
 {
+    print_node *node = NODE(body);
+    value *val = expression_evaluate(node->exp);
+    
+    switch (val->type) {
+    case TYPE_BOOLEAN:
+        printf("%d\n", val->boolean);
+        break;
+        
+    case TYPE_NUMBER:
+        printf("%lf\n", val->number);
+        break;
+        
+    case TYPE_STRING:
+        printf("%s\n", val->string);
+        break;
+    }
 }
