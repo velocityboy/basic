@@ -1,0 +1,6 @@
+- test error handling in expression parsers
+- error on extra stuff at end of print statement
+- finish implementing operators and runtime errors
+- variables in runtime
+- LET statement
+- control flow

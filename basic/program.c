@@ -96,17 +96,14 @@ void program_insert_statement(program *pgm, statement *stmt)
  */
 statement *program_find_statment(program *pgm, int line)
 {
+    statement *prev = NULL;
     statement *stmt = NULL;
     
-    for (stmt = pgm->head; stmt != NULL; stmt = stmt->next) {
+    for (stmt = pgm->head; stmt != NULL; prev = stmt, stmt = stmt->next) {
         if (stmt->line >= line) {
             break;
         }
     }
     
-    if (stmt && stmt->line > line) {
-        stmt = stmt->prev;
-    }
-    
-    return stmt;
+    return prev;
 }

@@ -295,6 +295,14 @@ void parse_operator(parser *prs)
         case '=':
             prs->token_type = TOK_EQUALS;
             break;
+            
+        case ',':
+            prs->token_type = TOK_COMMA;
+            break;
+            
+        case ';':
+            prs->token_type = TOK_SEMICOLON;
+            break;
     
         case '<':
             if (parser_peek(prs) == '=') {

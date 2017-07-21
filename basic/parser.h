@@ -21,6 +21,8 @@ enum token_type
     TOK_DIVIDE,
     TOK_LPAREN,
     TOK_RPAREN,
+    TOK_COMMA,
+    TOK_SEMICOLON,
     
     TOK_EQUALS,
     TOK_LESSTHAN,

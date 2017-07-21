@@ -57,6 +57,8 @@
 		7BD7D00D1F21923F001EEDB6 /* value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = value.h; sourceTree = "<group>"; };
 		7BD7D00F1F21BC77001EEDB6 /* runtime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = runtime.c; sourceTree = "<group>"; };
 		7BD7D0101F21BC77001EEDB6 /* runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = runtime.h; sourceTree = "<group>"; };
+		7BD7D0121F21C98D001EEDB6 /* hello.bas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hello.bas; sourceTree = "<group>"; };
+		7BD7D0131F21C98D001EEDB6 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,8 @@
 		7BD7CFE91F202095001EEDB6 /* basic */ = {
 			isa = PBXGroup;
 			children = (
+				7BD7D0121F21C98D001EEDB6 /* hello.bas */,
+				7BD7D0131F21C98D001EEDB6 /* TODO.txt */,
 				7BD7D0091F206D6F001EEDB6 /* expression.c */,
 				7BD7D00A1F206D6F001EEDB6 /* expression.h */,
 				7BD7CFF51F202311001EEDB6 /* keyword.h */,
