@@ -31,13 +31,13 @@ static inline char parser_get(parser *prs)
     return ch;
 }
 
+static void parser_reset(parser *prs);
 static statement *parse_statement(parser *prs, int from_repl);
 static void parse_line_number(parser *prs, statement *stmt);
 static void parse_identifier(parser *prs);
 static void parse_number(parser *prs);
 static void parse_string(parser *prs);
 static void parse_operator(parser *prs);
-static void throw_error(parser *prs, const char *fmt, ...) __attribute__((__noreturn__));
 static int read_line(parser *prs, FILE *fp);
 static void append_line_buffer(parser *prs, char ch);
 static void grow_line_buffer(parser *prs);
@@ -56,6 +56,7 @@ parser *parser_alloc()
  */
 void parser_free(parser *prs)
 {
+    free(prs->error_msg);
     free(prs->line_buffer);
     free(prs);
 }
@@ -68,12 +69,19 @@ void parser_free(parser *prs)
  */
 int parser_parse_file(parser *prs, FILE *fp, program *pgm)
 {
-    while (read_line(prs, fp) != -1) {
+    while (1) {
+        parser_reset(prs);
+        
+        if (read_line(prs, fp) == -1) {
+            break;
+        }
+        
         strtrim(prs->line_buffer);
         if (!prs->line_buffer[0]) {
             continue;
         }
         
+        parser_reset(prs);
         statement *stmt = parse_statement(prs, 0);
         
         if (stmt) {
@@ -84,29 +92,27 @@ int parser_parse_file(parser *prs, FILE *fp, program *pgm)
     return 0;
 }
 
+/* Reinitialize the parser for parsing a new statement
+ */
+void parser_reset(parser *prs)
+{
+    prs->in_line_buffer = 0;
+    prs->parse_index = 0;
+    prs->token_start = 0;
+    prs->token_end = 0;
+    prs->token_type = TOK_END;
+    
+    free(prs->error_msg);
+    prs->error_msg = NULL;
+}
+
 /* Parse and return a statement
  */
 statement *parse_statement(parser *prs, int from_repl)
 {
     statement *stmt = statement_alloc();
     
-    if (setjmp(prs->error) != 0) {
-        if (prs->error_msg) {
-            fprintf(stderr, "%s", prs->error_msg);
-            if (stmt->line != -1) {
-                fprintf(stderr, " IN LINE %d", stmt->line);
-            }
-            fprintf(stderr, "\n");
-        }
-    
-        statement_free(stmt);
-        return NULL;
-    }
-
-    prs->parse_index = 0;
-
     parse_line_number(prs, stmt);
-    
     parse_next_token(prs);
     
     keyword *kw = NULL;
@@ -119,18 +125,30 @@ statement *parse_statement(parser *prs, int from_repl)
     // TODO a line number with nothing behind it means to delete the line
     
     if (kw == NULL) {
-        throw_error(prs, "KEYWORD EXPECTED");
-    }
-    
-    if (from_repl && (kw->flags & KWFL_OK_IN_REPL) == 0) {
-        throw_error(prs, "'%s' IS ONLY VALID IN A PROGRAM", kw->id);
+        parser_set_error(prs, "KEYWORD EXPECTED");
+    } else if (from_repl && (kw->flags & KWFL_OK_IN_REPL) == 0) {
+        parser_set_error(prs, "'%s' IS ONLY VALID IN A PROGRAM", kw->id);
     } else if (!from_repl && (kw->flags & KWFL_OK_IN_STMT) == 0) {
-        throw_error(prs, "'%s' IS NOT VALID IN A PROGRAM", kw->id);
+        parser_set_error(prs, "'%s' IS NOT VALID IN A PROGRAM", kw->id);
+    } else {
+        parse_next_token(prs);
+        if (!parser_error(prs)) {
+            kw->parse_statement(prs, stmt);
+        }
     }
     
-    parse_next_token(prs);
-    kw->parse_statement(prs, stmt);
+    if (parser_error(prs)) {
+        fprintf(stderr, "%s", prs->error_msg);
+        if (stmt->line != -1) {
+            fprintf(stderr, " IN LINE %d", stmt->line);
+        }
+        fprintf(stderr, "\n");
+        
+        statement_free(stmt);
+        return NULL;
+    }
     
+
     return stmt;
 }
 
@@ -168,6 +186,59 @@ char *parser_extract_token_text(parser *prs)
     return text;
 }
 
+/* Report an error
+ */
+void parser_set_error(parser *prs, const char *fmt, ...)
+{
+    char error[100];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(error, sizeof(error), fmt, args);
+    va_end(args);
+    
+    prs->error_msg = safe_strdup(error);
+}
+
+/* Return a description of the current token. Returns an allocated
+ * string which must be free'd
+ */
+char *parser_describe_token(parser *prs)
+{
+    if (is_operator(prs->token_type)) {
+        return parser_extract_token_text(prs);
+    }
+    
+    char *text = "unknown";
+    
+    switch (prs->token_type) {
+    case TOK_END:
+        text = "end of input";
+        break;
+        
+    case TOK_ERROR:
+        text = "invalid token";
+        break;
+    
+    case TOK_NUMBER:
+        text = "number";
+        break;
+        
+    case TOK_IDENTIFIER:
+        text = "identifier";
+        break;
+        
+    case TOK_STRING:
+        text = "string literal";
+        break;
+        
+    default:
+        break;
+    }
+    
+    return safe_strdup(text);
+}
+
+
 /* Parse the next token out of the input line
  */
 void parse_next_token(parser *prs)
@@ -191,6 +262,10 @@ void parse_next_token(parser *prs)
     }
     
     prs->token_end = prs->parse_index;
+    
+    if (parser_error(prs)) {
+        prs->token_type = TOK_ERROR;
+    }
 }
 
 /* Parse an identifier (which might end with $ if it's a variable*
@@ -233,7 +308,8 @@ void parse_number(parser *prs)
         }
         
         if (!isdigit(parser_peek(prs))) {
-            throw_error(prs, "INVALID NUMBER");
+            parser_set_error(prs, "INVALID NUMBER");
+            return;
         }
         
         while (isdigit(parser_peek(prs))) {
@@ -256,7 +332,8 @@ void parse_string(parser *prs)
         }
         
         if (!ch) {
-            throw_error(prs, "UNTERMINATED STRING");
+            parser_set_error(prs, "UNTERMINATED STRING");
+            return;
         }
     }
 }
@@ -326,22 +403,8 @@ void parse_operator(parser *prs)
             break;
             
         default:
-            throw_error(prs, "INVALID OPERATOR %c", ch);
+            parser_set_error(prs, "INVALID OPERATOR %c", ch);
     }
-}
-
-/* Report an error and throw an exception
- */
-void throw_error(parser *prs, const char *fmt, ...)
-{
-    char error[100];
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(error, sizeof(error), fmt, args);
-    va_end(args);
-    
-    prs->error_msg = safe_strdup(error);
-    longjmp(prs->error, 1);
 }
 
 /* Read a line from the given file. Returns the number of characters

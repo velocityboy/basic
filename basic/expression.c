@@ -74,12 +74,13 @@ static expopnode *alloc_varref(char *varname);
  */
 expression *expression_parse(parser *prs)
 {
-    // TODO all through here, if we throw a parse error
-    // none of this stuff will get cleaned up
-    
     expression *exp = safe_calloc(1, sizeof(expression));
     
     exp->root = parse_expression(prs);
+    if (exp->root == NULL) {
+        free(exp);
+        exp = NULL;
+    }
     
     return exp;
 }
@@ -107,6 +108,9 @@ value *expression_evaluate(expression *exp)
 expopnode *parse_expression(parser *prs)
 {
     expopnode *left = parse_relop_term(prs);
+    if (left == NULL) {
+        return NULL;
+    }
     
     /* note that unlike some other languages, we don't allow chaining
      * of relational operators
@@ -117,6 +121,10 @@ expopnode *parse_expression(parser *prs)
         
         parse_next_token(prs);
         expopnode *right = parse_relop_term(prs);
+        if (right == NULL) {
+            left->free(left);
+            return NULL;
+        }
         
         left = alloc_binop(op, left, right);
     }
@@ -129,12 +137,19 @@ expopnode *parse_expression(parser *prs)
 expopnode *parse_relop_term(parser *prs)
 {
     expopnode *left = parse_sum_term(prs);
+    if (left == NULL) {
+        return NULL;
+    }
     
     while (prs->token_type == TOK_PLUS || prs->token_type == TOK_MINUS) {
         token_type op = prs->token_type;
         parse_next_token(prs);
         
         expopnode *right = parse_sum_term(prs);
+        if (right == NULL) {
+            left->free(left);
+            return NULL;
+        }
         
         left = alloc_binop(op, left, right);
     }
@@ -147,13 +162,20 @@ expopnode *parse_relop_term(parser *prs)
 expopnode *parse_sum_term(parser *prs)
 {
     expopnode *left = parse_mul_term(prs);
+
+    if (left == NULL) {
+        return NULL;
+    }
     
     while (prs->token_type == TOK_TIMES || prs->token_type == TOK_DIVIDE) {
         token_type op = prs->token_type;
         parse_next_token(prs);
         
         expopnode *right = parse_sum_term(prs);
-        
+        if (right == NULL) {
+            left->free(left);
+            return NULL;
+        }
         left = alloc_binop(op, left, right);
     }
     
@@ -173,7 +195,7 @@ expopnode *parse_mul_term(parser *prs)
     
     expopnode *value = parse_unary_term(prs);
     
-    if (negate) {
+    if (value && negate) {
         value = alloc_unop(prs->token_type, value);
     }
     
@@ -188,9 +210,13 @@ expopnode *parse_unary_term(parser *prs)
         parse_next_token(prs);
         
         expopnode *ret = parse_expression(prs);
+        if (!ret) {
+            return NULL;
+        }
         
         if (prs->token_type != TOK_RPAREN) {
-        // TODO error reporting here
+            parser_set_error(prs, "UNBALANCED PARENTHESES");
+            ret->free(ret);
             return NULL;
         }
         parse_next_token(prs);
@@ -206,8 +232,8 @@ expopnode *parse_unary_term(parser *prs)
 expopnode *parse_paren_term(parser *prs)
 {
     expopnode *ret = NULL;
-    char *text;
-    double num;
+    char *text = NULL;
+    double num = 0;
     
     switch (prs->token_type) {
     case TOK_STRING:
@@ -234,6 +260,9 @@ expopnode *parse_paren_term(parser *prs)
         break;
     
     default:
+        text = parser_describe_token(prs);
+        parser_set_error(prs, "%s FOUND, LITERAL OR VARIABLE EXPECTED", text);
+        free(text);
         break;
     }
 

@@ -92,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				7BD7D0121F21C98D001EEDB6 /* hello.bas */,
+				7BD7CFF31F2021CA001EEDB6 /* test.bas */,
 				7BD7D0131F21C98D001EEDB6 /* TODO.txt */,
 				7BD7D0091F206D6F001EEDB6 /* expression.c */,
 				7BD7D00A1F206D6F001EEDB6 /* expression.h */,
@@ -115,7 +116,6 @@
 				7BD7CFFC1F2025B3001EEDB6 /* stringutil.h */,
 				7BD7D00C1F21923F001EEDB6 /* value.c */,
 				7BD7D00D1F21923F001EEDB6 /* value.h */,
-				7BD7CFF31F2021CA001EEDB6 /* test.bas */,
 			);
 			path = basic;
 			sourceTree = "<group>";
