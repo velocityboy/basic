@@ -24,12 +24,18 @@ value *value_alloc_boolean(int v)
 }
 
 /* Create a string value (which owns its own memory)
+ * if allocated is set then the caller has already allocated the string
+ * and the value should take ownership
  */
-value *value_alloc_string(const char *s)
+value *value_alloc_string(char *s, int allocated)
 {
     value *val = safe_calloc(1, sizeof(value));
     val->type = TYPE_STRING;
-    val->string = safe_strdup(s);
+    if (allocated) {
+        val->string = s;
+    } else {
+        val->string = safe_strdup(s);
+    }
     
     return val;
 }

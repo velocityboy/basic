@@ -21,7 +21,7 @@ struct value
 
 extern value *value_alloc_number(double v);
 extern value *value_alloc_boolean(int v);
-extern value *value_alloc_string(const char *s);
+extern value *value_alloc_string(char *s, int allocated);
 extern void value_free(value *v);
 
 #endif /* value_h */

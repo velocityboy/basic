@@ -43,7 +43,10 @@ struct varref
 };
 
 static value *eval_less(expopnode *node);
+static value *eval_plus(expopnode *node);
+static value *eval_times(expopnode *node);
 static value *eval_unary_minus(expopnode *node);
+
 static expopnode *parse_expression(parser *prs);
 static expopnode *parse_relop_term(parser *prs);
 static expopnode *parse_sum_term(parser *prs);
@@ -239,8 +242,7 @@ expopnode *parse_paren_term(parser *prs)
     case TOK_STRING:
         text = parser_extract_token_text(prs);
         strunquote(text);
-        ret = alloc_literal(value_alloc_string(text));
-        free(text);
+        ret = alloc_literal(value_alloc_string(text, 1));
         parse_next_token(prs);
         break;
         
@@ -282,8 +284,51 @@ value *eval_less(expopnode *node)
     if (left == NULL || right == NULL) {
     } else if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
         ret = value_alloc_boolean(strcmp(left->string, right->string) < 0);
-    } else if (left->type == TYPE_NUMBER && right->type == TYPE_STRING) {
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
         ret = value_alloc_boolean(left->number < right->number);
+    }
+    
+    return ret;
+}
+
+/* runtime for + operator
+ */
+value *eval_plus(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    value *ret = NULL;
+    
+    if (left == NULL || right == NULL) {
+    } else if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+        size_t llen = strlen(left->string);
+        size_t rlen = strlen(right->string);
+        size_t n = llen + rlen + 1;
+        char *temp = safe_malloc(n);
+        strncpy(temp, left->string, n);
+        strncpy(temp + llen, right->string, n - llen);
+        ret = value_alloc_string(temp, 1);
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+        ret = value_alloc_number(left->number + right->number);
+    }
+    
+    return ret;
+}
+
+/* runtime for * operator
+ */
+value *eval_times(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    value *ret = NULL;
+    
+    if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+        ret = value_alloc_number(left->number * right->number);
     }
     
     return ret;
@@ -338,9 +383,21 @@ expopnode *alloc_binop(token_type op, expopnode *left, expopnode *right)
         bop->opnode.evaluate = &eval_less;
         break;
         
+    case TOK_PLUS:
+        bop->opnode.evaluate = &eval_plus;
+        break;
+        
+    case TOK_TIMES:
+        bop->opnode.evaluate = &eval_times;
+        break;
+            
     default:
         assert(0);
     }
+   
+    
+    bop->left = left;
+    bop->right = right;
     
     return &bop->opnode;
 }

@@ -23,6 +23,17 @@ void *safe_calloc(size_t count, size_t size)
     return p;
 }
 
+/* malloc() but cannot return NULL
+ */
+void *safe_malloc(size_t size)
+{
+    void *p = malloc(size);
+    if (p == NULL) {
+        out_of_memory();
+    }
+    return p;
+}
+
 /* realloc() but cannot return NULL
  */
 void *safe_realloc(void *buffer, size_t new_size)
