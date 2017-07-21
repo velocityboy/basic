@@ -45,8 +45,15 @@ struct varref
 
 static int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid);
 static value *eval_less(expopnode *node);
+static value *eval_greater(expopnode *node);
+static value *eval_lesseq(expopnode *node);
+static value *eval_greatereq(expopnode *node);
+static value *eval_equal(expopnode *node);
+static value *eval_notequal(expopnode *node);
 static value *eval_plus(expopnode *node);
+static value *eval_minus(expopnode *node);
 static value *eval_times(expopnode *node);
+static value *eval_divide(expopnode *node);
 static value *eval_unary_minus(expopnode *node);
 
 static expopnode *parse_expression(parser *prs);
@@ -332,6 +339,125 @@ value *eval_less(expopnode *node)
     return ret;
 }
 
+/* runtime for > operator
+ */
+value *eval_greater(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
+    
+    value *ret = NULL;
+    
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+        ret = value_alloc_boolean(strcmp(left->string, right->string) > 0);
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+        ret = value_alloc_boolean(left->number > right->number);
+    }
+    
+    return ret;
+}
+
+/* runtime for <= operator
+ */
+value *eval_lesseq(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
+    
+    value *ret = NULL;
+    
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+        ret = value_alloc_boolean(strcmp(left->string, right->string) <= 0);
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+        ret = value_alloc_boolean(left->number <= right->number);
+    }
+    
+    return ret;
+}
+
+/* runtime for >= operator
+ */
+value *eval_greatereq(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
+    
+    value *ret = NULL;
+    
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+        ret = value_alloc_boolean(strcmp(left->string, right->string) >= 0);
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+        ret = value_alloc_boolean(left->number >= right->number);
+    }
+    
+    return ret;
+}
+
+/* runtime for = operator
+ */
+value *eval_equal(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
+    
+    value *ret = NULL;
+    
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+        ret = value_alloc_boolean(strcmp(left->string, right->string) == 0);
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+    
+        // TODO floating point equality
+        ret = value_alloc_boolean(left->number == right->number);
+    }
+    
+    return ret;
+}
+
+/* runtime for <> operator
+ */
+value *eval_notequal(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
+    
+    value *ret = NULL;
+    
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+        ret = value_alloc_boolean(strcmp(left->string, right->string) != 0);
+    } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
+    
+        // TODO floating point equality
+        ret = value_alloc_boolean(left->number != right->number);
+    }
+    
+    return ret;
+}
+
 /* runtime for + operator
  */
 value *eval_plus(expopnode *node)
@@ -346,8 +472,7 @@ value *eval_plus(expopnode *node)
     
     value *ret = NULL;
     
-    if (left == NULL || right == NULL) {
-    } else if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
         size_t llen = strlen(left->string);
         size_t rlen = strlen(right->string);
         size_t n = llen + rlen + 1;
@@ -362,6 +487,21 @@ value *eval_plus(expopnode *node)
     return ret;
 }
 
+/* runtime for - operator
+ */
+value *eval_minus(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("SUBTRACT", left->type, right->type, numbers)) {
+        return NULL;
+    }
+    
+    return value_alloc_number(left->number - right->number);
+}
+
 /* runtime for * operator
  */
 value *eval_times(expopnode *node)
@@ -370,17 +510,26 @@ value *eval_times(expopnode *node)
     value *left = bop->left->evaluate(bop->left);
     value *right = bop->right->evaluate(bop->right);
     
-    if (!binop_validate("MULTIPLY", left->type, right->type, numbers)) {
+    if (!binop_validate("TIMES", left->type, right->type, numbers)) {
         return NULL;
     }
     
-    value *ret = NULL;
+    return value_alloc_number(left->number * right->number);
+}
+
+/* runtime for / operator
+ */
+value *eval_divide(expopnode *node)
+{
+    binop *bop = (binop *)node;
+    value *left = bop->left->evaluate(bop->left);
+    value *right = bop->right->evaluate(bop->right);
     
-    if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
-        ret = value_alloc_number(left->number * right->number);
+    if (!binop_validate("DIVIDE", left->type, right->type, numbers)) {
+        return NULL;
     }
     
-    return ret;
+    return value_alloc_number(left->number / right->number);
 }
 
 /* runtime for unary minus
@@ -432,12 +581,40 @@ expopnode *alloc_binop(token_type op, expopnode *left, expopnode *right)
         bop->opnode.evaluate = &eval_less;
         break;
         
+    case TOK_GREATERTHAN:
+        bop->opnode.evaluate = &eval_greater;
+        break;
+        
+    case TOK_LESSEQUALS:
+        bop->opnode.evaluate = &eval_lesseq;
+        break;
+        
+    case TOK_GREATEREQUALS:
+        bop->opnode.evaluate = &eval_greatereq;
+        break;
+        
+    case TOK_EQUALS:
+        bop->opnode.evaluate = &eval_equal;
+        break;
+        
+    case TOK_NOTEQUALS:
+        bop->opnode.evaluate = &eval_notequal;
+        break;
+        
     case TOK_PLUS:
         bop->opnode.evaluate = &eval_plus;
         break;
         
+    case TOK_MINUS:
+        bop->opnode.evaluate = &eval_minus;
+        break;
+        
     case TOK_TIMES:
         bop->opnode.evaluate = &eval_times;
+        break;
+            
+    case TOK_DIVIDE:
+        bop->opnode.evaluate = &eval_divide;
         break;
             
     default:
