@@ -49,3 +49,17 @@ void value_free(value *v)
     }
     free(v);
 }
+
+/* Return a static description of a value type
+ */
+const char *value_describe_type(valuetype type)
+{
+    switch (type) {
+        case TYPE_NUMBER: return "NUMBER";
+        case TYPE_STRING: return "STRING";
+        case TYPE_BOOLEAN: return "BOOLEAN";
+    }
+    
+    return "UNKNOWN";
+}
+

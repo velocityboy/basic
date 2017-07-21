@@ -8,6 +8,7 @@
 #include "value.h"
 
 typedef struct binop binop;
+typedef struct binop_argtypes binop_argtypes;
 typedef struct litop litop;
 typedef struct unop unop;
 typedef struct varref varref;
@@ -42,6 +43,7 @@ struct varref
     char *varname;
 };
 
+static int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid);
 static value *eval_less(expopnode *node);
 static value *eval_plus(expopnode *node);
 static value *eval_times(expopnode *node);
@@ -92,7 +94,7 @@ expression *expression_parse(parser *prs)
  */
 void expression_free(expression *exp)
 {
-    if (exp->root) {
+    if (exp && exp->root) {
         exp->root->free(exp->root);
     }
     free(exp);
@@ -271,6 +273,42 @@ expopnode *parse_paren_term(parser *prs)
     return ret;
 }
 
+struct binop_argtypes
+{
+    valuetype left;
+    valuetype right;
+    int last;
+};
+
+static binop_argtypes numbers[] =
+{
+    { TYPE_NUMBER, TYPE_NUMBER, 1 },
+};
+
+static binop_argtypes numbers_and_strings[] =
+{
+    { TYPE_STRING, TYPE_STRING, 0 },
+    { TYPE_NUMBER, TYPE_NUMBER, 1 },
+};
+
+int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid)
+{
+    for (int i = 0; ; i++, valid++)
+    {
+        if (valid->left == left && valid->right == right) {
+            return 1;
+        }
+    
+        if (valid->last) {
+            break;
+        }
+    }
+    
+    fprintf(stderr, "\nCANNOT %s %s AND %s\n", op, value_describe_type(left), value_describe_type(right));
+    
+    return 0;
+}
+
 /* runtime for < operator
  */
 value *eval_less(expopnode *node)
@@ -279,10 +317,13 @@ value *eval_less(expopnode *node)
     value *left = bop->left->evaluate(bop->left);
     value *right = bop->right->evaluate(bop->right);
     
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
+    
     value *ret = NULL;
     
-    if (left == NULL || right == NULL) {
-    } else if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
+    if (left->type == TYPE_STRING && right->type == TYPE_STRING) {
         ret = value_alloc_boolean(strcmp(left->string, right->string) < 0);
     } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
         ret = value_alloc_boolean(left->number < right->number);
@@ -298,6 +339,10 @@ value *eval_plus(expopnode *node)
     binop *bop = (binop *)node;
     value *left = bop->left->evaluate(bop->left);
     value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("ADD", left->type, right->type, numbers_and_strings)) {
+        return NULL;
+    }
     
     value *ret = NULL;
     
@@ -324,6 +369,10 @@ value *eval_times(expopnode *node)
     binop *bop = (binop *)node;
     value *left = bop->left->evaluate(bop->left);
     value *right = bop->right->evaluate(bop->right);
+    
+    if (!binop_validate("MULTIPLY", left->type, right->type, numbers)) {
+        return NULL;
+    }
     
     value *ret = NULL;
     

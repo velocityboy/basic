@@ -110,6 +110,12 @@ void print_execute(statement_body *body)
     for (print_part *p = node->parts; p; p = p->next) {
         value *val = expression_evaluate(p->exp);
         
+        // TODO really want (a) a more specific reason why expressions fail, and
+        // (b) a way to pass this up so the caller can print context like line #
+        if (val == NULL) {
+            return;
+        }
+        
         switch (val->type) {
         case TYPE_BOOLEAN:
             col += printf("%d", val->boolean);
