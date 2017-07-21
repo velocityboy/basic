@@ -29,8 +29,6 @@ void print_parse(parser *prs, statement *stmt)
     node->body.free = &print_free;
     
     stmt->body = &node->body;
-    
-    assert(node == (print_node*)&node->body);
 }
 
 /* free a print node 

@@ -16,6 +16,7 @@
 		7BD7D0051F2029B6001EEDB6 /* statement.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0031F2029B6001EEDB6 /* statement.c */; };
 		7BD7D0081F2068A4001EEDB6 /* print.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0061F2068A4001EEDB6 /* print.c */; };
 		7BD7D00B1F206D6F001EEDB6 /* expression.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0091F206D6F001EEDB6 /* expression.c */; };
+		7BD7D00E1F21923F001EEDB6 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D00C1F21923F001EEDB6 /* value.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +52,8 @@
 		7BD7D0071F2068A4001EEDB6 /* print.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = print.h; sourceTree = "<group>"; };
 		7BD7D0091F206D6F001EEDB6 /* expression.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = expression.c; sourceTree = "<group>"; };
 		7BD7D00A1F206D6F001EEDB6 /* expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expression.h; sourceTree = "<group>"; };
+		7BD7D00C1F21923F001EEDB6 /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = value.c; sourceTree = "<group>"; };
+		7BD7D00D1F21923F001EEDB6 /* value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = value.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +104,8 @@
 				7BD7D0041F2029B6001EEDB6 /* statement.h */,
 				7BD7CFFB1F2025B3001EEDB6 /* stringutil.c */,
 				7BD7CFFC1F2025B3001EEDB6 /* stringutil.h */,
+				7BD7D00C1F21923F001EEDB6 /* value.c */,
+				7BD7D00D1F21923F001EEDB6 /* value.h */,
 				7BD7CFF31F2021CA001EEDB6 /* test.bas */,
 			);
 			path = basic;
@@ -168,6 +173,7 @@
 				7BD7D0021F20290D001EEDB6 /* program.c in Sources */,
 				7BD7CFFD1F2025B3001EEDB6 /* stringutil.c in Sources */,
 				7BD7D0001F202800001EEDB6 /* parser.c in Sources */,
+				7BD7D00E1F21923F001EEDB6 /* value.c in Sources */,
 				7BD7D0081F2068A4001EEDB6 /* print.c in Sources */,
 				7BD7CFFA1F202500001EEDB6 /* safemem.c in Sources */,
 				7BD7D0051F2029B6001EEDB6 /* statement.c in Sources */,

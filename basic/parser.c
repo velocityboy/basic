@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <ctype.h>
-#include <setjmp.h>
 #include <stdarg.h>
 #include <string.h>
 
@@ -10,30 +9,6 @@
 #include "safemem.h"
 #include "statement.h"
 #include "stringutil.h"
-
-enum token_type
-{
-    TOK_END,
-    TOK_NUMBER,
-    TOK_IDENTIFIER,
-    TOK_OPERATOR,
-    TOK_STRING,
-};
-
-struct parser
-{
-    char *line_buffer;
-    int in_line_buffer;
-    int line_buffer_size;
-    int parse_index;
-    int token_start;
-    int token_end;
-    enum token_type token_type;
-    
-    char *error_msg;
-    
-    jmp_buf error;
-};
 
 static inline char parser_peek(parser *prs)
 {
@@ -51,15 +26,17 @@ static inline char parser_get(parser *prs)
 {
     char ch = prs->line_buffer[prs->parse_index];
     if (ch) {
-        prs->parse_index--;
+        prs->parse_index++;
     }
     return ch;
 }
 
 static statement *parse_statement(parser *prs, int from_repl);
 static void parse_line_number(parser *prs, statement *stmt);
-static char *extract_token_text(parser *prs);
-static void parse_next_token(parser *prs);
+static void parse_identifier(parser *prs);
+static void parse_number(parser *prs);
+static void parse_string(parser *prs);
+static void parse_operator(parser *prs);
 static void throw_error(parser *prs, const char *fmt, ...) __attribute__((__noreturn__));
 static int read_line(parser *prs, FILE *fp);
 static void append_line_buffer(parser *prs, char ch);
@@ -134,7 +111,7 @@ statement *parse_statement(parser *prs, int from_repl)
     
     keyword *kw = NULL;
     if (prs->token_type == TOK_IDENTIFIER) {
-        char *text = extract_token_text(prs);
+        char *text = parser_extract_token_text(prs);
         kw = kw_find(text);
         free(text);
     }
@@ -151,6 +128,7 @@ statement *parse_statement(parser *prs, int from_repl)
         throw_error(prs, "'%s' IS NOT VALID IN A PROGRAM", kw->id);
     }
     
+    parse_next_token(prs);
     kw->parse_statement(prs, stmt);
     
     return stmt;
@@ -181,7 +159,7 @@ void parse_line_number(parser *prs, statement *stmt)
 
 /* Make a copy of the current token text
  */
-char *extract_token_text(parser *prs)
+char *parser_extract_token_text(parser *prs)
 {
     size_t len = prs->token_end - prs->token_start;
     char *text = safe_calloc(len + 1, sizeof(char));
@@ -203,65 +181,145 @@ void parse_next_token(parser *prs)
     if (parser_peek(prs) == '\0') {
         prs->token_type = TOK_END;
     } else if (isalpha(parser_peek(prs))) {
-        prs->token_type = TOK_IDENTIFIER;
-        
-        while (isalpha(parser_peek(prs))) {
-            parser_next(prs);
-        }
-        
-        if (parser_peek(prs) == '$') {
-            parser_next(prs);
-        }
+        parse_identifier(prs);
     } else if (isdigit(parser_peek(prs))) {
-        prs->token_type = TOK_NUMBER;
+        parse_number(prs);
+    } else if (parser_peek(prs) == '"') {
+        parse_string(prs);
+    } else {
+        parse_operator(prs);
+    }
+    
+    prs->token_end = prs->parse_index;
+}
+
+/* Parse an identifier (which might end with $ if it's a variable*
+ */
+void parse_identifier(parser *prs)
+{
+    prs->token_type = TOK_IDENTIFIER;
+        
+    while (isalpha(parser_peek(prs))) {
+        parser_next(prs);
+    }
+        
+    if (parser_peek(prs) == '$') {
+        parser_next(prs);
+    }
+}
+
+/* Parse a number literal (standard floating point 1.0E+09)
+ */
+void parse_number(parser *prs)
+{
+    prs->token_type = TOK_NUMBER;
+    
+    while (isdigit(parser_peek(prs))) {
+        parser_next(prs);
+    }
+    
+    if (parser_peek(prs) == '.') {
+        parser_next(prs);
+        while (isdigit(parser_peek(prs))) {
+            parser_next(prs);
+        }
+    }
+    
+    if (parser_peek(prs) == 'e' || parser_peek(prs) == 'E') {
+        parser_next(prs);
+        
+        if (parser_peek(prs) == '+' || parser_peek(prs) == '-') {
+            parser_next(prs);
+        }
+        
+        if (!isdigit(parser_peek(prs))) {
+            throw_error(prs, "INVALID NUMBER");
+        }
         
         while (isdigit(parser_peek(prs))) {
             parser_next(prs);
         }
-        
-        if (parser_peek(prs) == '.') {
-            parser_next(prs);
-            while (isdigit(parser_peek(prs))) {
-                parser_next(prs);
-            }
-        }
-        
-        if (parser_peek(prs) == 'e' || parser_peek(prs) == 'E') {
-            parser_next(prs);
-            
-            if (parser_peek(prs) == '+' || parser_peek(prs) == '-') {
-                parser_next(prs);
-            }
-            
-            if (!isdigit(parser_peek(prs))) {
-                throw_error(prs, "INVALID NUMBER");
-            }
-            
-            while (isdigit(parser_peek(prs))) {
-                parser_next(prs);
-            }
-        }
-    } else if (parser_peek(prs) == '"') {
-        prs->token_type = TOK_STRING;
-
-        parser_next(prs);
-        while (1) {
-            char ch = parser_get(prs);
-            if (ch == '"') {
-                break;
-            }
-            
-            if (!ch) {
-                throw_error(prs, "UNTERMINATED STRING");
-            }
-        }
-    } else {
-        prs->token_type = TOK_OPERATOR;
-        /* TODO verify operators */
-        parser_next(prs);
     }
+}
+
+/* Parse a string literal
+ */
+void parse_string(parser *prs)
+{
+    prs->token_type = TOK_STRING;
+
+    parser_next(prs);
+    while (1) {
+        char ch = parser_get(prs);
+        if (ch == '"') {
+            break;
+        }
+        
+        if (!ch) {
+            throw_error(prs, "UNTERMINATED STRING");
+        }
+    }
+}
+
+/* Parse operator
+ */
+void parse_operator(parser *prs)
+{
+    char ch = parser_get(prs);
     
-    prs->token_end = prs->parse_index;
+    switch (ch) {
+        case '+':
+            prs->token_type = TOK_PLUS;
+            break;
+    
+        case '-':
+            prs->token_type = TOK_MINUS;
+            break;
+    
+        case '*':
+            prs->token_type = TOK_TIMES;
+            break;
+            
+        case '/':
+            prs->token_type = TOK_DIVIDE;
+            break;
+    
+        case '(':
+            prs->token_type = TOK_LPAREN;
+            break;
+    
+        case ')':
+            prs->token_type = TOK_RPAREN;
+            break;
+    
+        case '=':
+            prs->token_type = TOK_EQUALS;
+            break;
+    
+        case '<':
+            if (parser_peek(prs) == '=') {
+                prs->token_type = TOK_LESSEQUALS;
+                parser_next(prs);
+            } else if (parser_peek(prs) == '>') {
+                prs->token_type = TOK_NOTEQUALS;
+                parser_next(prs);
+            } else {
+                prs->token_type = TOK_LESSTHAN;
+            }
+            break;
+    
+        case '>':
+            if (parser_peek(prs) == '=') {
+                prs->token_type = TOK_GREATEREQUALS;
+                parser_next(prs);
+            } else {
+                prs->token_type = TOK_GREATERTHAN;
+            }
+            break;
+            
+        default:
+            throw_error(prs, "INVALID OPERATOR %c", ch);
+    }
 }
 
 /* Report an error and throw an exception
