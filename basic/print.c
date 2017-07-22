@@ -4,6 +4,7 @@
 #include "expression.h"
 #include "parser.h"
 #include "print.h"
+#include "runtime.h"
 #include "safemem.h"
 #include "statement.h"
 #include "value.h"
@@ -35,7 +36,7 @@ struct print_node
     print_part *parts_tail;
 };
 
-static void print_execute(statement_body *body);
+static void print_execute(statement_body *body, runtime *rt);
 static void print_free(statement_body *body);
 static print_part *part_alloc(expression *exp, print_spacing spacing);
 static void part_free(print_part *part);
@@ -43,8 +44,7 @@ static void part_free(print_part *part);
 /* parse the body of a print statement
  */
 void print_parse(parser *prs, statement *stmt)
-{
-    
+{    
     print_node *node = (print_node *)safe_calloc(1, sizeof(print_node));
 
     while (1) {
@@ -53,7 +53,10 @@ void print_parse(parser *prs, statement *stmt)
         }
         
         expression *exp = expression_parse(prs);
-
+        if (exp == NULL) {
+            break;
+        }
+        
         print_spacing spacing = SPC_NONE;
         if (prs->token_type == TOK_SEMICOLON) {
             spacing = SPC_ADJACENT;
@@ -102,13 +105,13 @@ void print_free(statement_body *body)
 
 /* evaluate the print statement
  */
-void print_execute(statement_body *body)
+void print_execute(statement_body *body, runtime *rt)
 {
     print_node *node = (print_node *)body;
     int col = 0;
     
     for (print_part *p = node->parts; p; p = p->next) {
-        value *val = expression_evaluate(p->exp);
+        value *val = expression_evaluate(p->exp, rt);
         
         // TODO really want (a) a more specific reason why expressions fail, and
         // (b) a way to pass this up so the caller can print context like line #

@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "keyword.h"
+#include "let.h"
 #include "print.h"
 #include "safemem.h"
 #include "stringutil.h"
@@ -10,7 +11,8 @@
 
 static keyword keywords[] =
 {
-    { "PRINT",  KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
+    { "LET", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &let_parse },
+    { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
 
     { NULL, 0 }
 };

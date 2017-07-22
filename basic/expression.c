@@ -3,6 +3,7 @@
 
 #include "expression.h"
 #include "parser.h"
+#include "runtime.h"
 #include "safemem.h"
 #include "stringutil.h"
 #include "value.h"
@@ -44,17 +45,17 @@ struct varref
 };
 
 static int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid);
-static value *eval_less(expopnode *node);
-static value *eval_greater(expopnode *node);
-static value *eval_lesseq(expopnode *node);
-static value *eval_greatereq(expopnode *node);
-static value *eval_equal(expopnode *node);
-static value *eval_notequal(expopnode *node);
-static value *eval_plus(expopnode *node);
-static value *eval_minus(expopnode *node);
-static value *eval_times(expopnode *node);
-static value *eval_divide(expopnode *node);
-static value *eval_unary_minus(expopnode *node);
+static value *eval_less(expopnode *node, runtime *rt);
+static value *eval_greater(expopnode *node, runtime *rt);
+static value *eval_lesseq(expopnode *node, runtime *rt);
+static value *eval_greatereq(expopnode *node, runtime *rt);
+static value *eval_equal(expopnode *node, runtime *rt);
+static value *eval_notequal(expopnode *node, runtime *rt);
+static value *eval_plus(expopnode *node, runtime *rt);
+static value *eval_minus(expopnode *node, runtime *rt);
+static value *eval_times(expopnode *node, runtime *rt);
+static value *eval_divide(expopnode *node, runtime *rt);
+static value *eval_unary_minus(expopnode *node, runtime *rt);
 
 static expopnode *parse_expression(parser *prs);
 static expopnode *parse_relop_term(parser *prs);
@@ -68,11 +69,11 @@ static expopnode *alloc_binop(token_type op, expopnode *left, expopnode *right);
 static void free_unop(expopnode *node);
 static expopnode *alloc_unop(token_type op, expopnode *value);
 
-static value *eval_literal(expopnode *node);
+static value *eval_literal(expopnode *node, runtime *rt);
 static void free_litop(expopnode *node);
 static expopnode *alloc_literal(value *value);
 
-static value *eval_varref(expopnode *node);
+static value *eval_varref(expopnode *node, runtime *rt);
 static void free_varref(expopnode *node);
 static expopnode *alloc_varref(char *varname);
 
@@ -109,11 +110,10 @@ void expression_free(expression *exp)
 
 /* Evaluate an expression
  */
-value *expression_evaluate(expression *exp)
+value *expression_evaluate(expression *exp, runtime *rt)
 {
-    return exp->root->evaluate(exp->root);
+    return exp->root->evaluate(exp->root, rt);
 }
-
 
 /* Parse top level of expression
  */
@@ -318,11 +318,11 @@ int binop_validate(const char *op, valuetype left, valuetype right, binop_argtyp
 
 /* runtime for < operator
  */
-value *eval_less(expopnode *node)
+value *eval_less(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -341,11 +341,11 @@ value *eval_less(expopnode *node)
 
 /* runtime for > operator
  */
-value *eval_greater(expopnode *node)
+value *eval_greater(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -364,11 +364,11 @@ value *eval_greater(expopnode *node)
 
 /* runtime for <= operator
  */
-value *eval_lesseq(expopnode *node)
+value *eval_lesseq(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -387,11 +387,11 @@ value *eval_lesseq(expopnode *node)
 
 /* runtime for >= operator
  */
-value *eval_greatereq(expopnode *node)
+value *eval_greatereq(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -410,11 +410,11 @@ value *eval_greatereq(expopnode *node)
 
 /* runtime for = operator
  */
-value *eval_equal(expopnode *node)
+value *eval_equal(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -435,11 +435,11 @@ value *eval_equal(expopnode *node)
 
 /* runtime for <> operator
  */
-value *eval_notequal(expopnode *node)
+value *eval_notequal(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -460,11 +460,11 @@ value *eval_notequal(expopnode *node)
 
 /* runtime for + operator
  */
-value *eval_plus(expopnode *node)
+value *eval_plus(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("ADD", left->type, right->type, numbers_and_strings)) {
         return NULL;
@@ -489,11 +489,11 @@ value *eval_plus(expopnode *node)
 
 /* runtime for - operator
  */
-value *eval_minus(expopnode *node)
+value *eval_minus(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("SUBTRACT", left->type, right->type, numbers)) {
         return NULL;
@@ -504,11 +504,11 @@ value *eval_minus(expopnode *node)
 
 /* runtime for * operator
  */
-value *eval_times(expopnode *node)
+value *eval_times(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("TIMES", left->type, right->type, numbers)) {
         return NULL;
@@ -519,11 +519,11 @@ value *eval_times(expopnode *node)
 
 /* runtime for / operator
  */
-value *eval_divide(expopnode *node)
+value *eval_divide(expopnode *node, runtime *rt)
 {
     binop *bop = (binop *)node;
-    value *left = bop->left->evaluate(bop->left);
-    value *right = bop->right->evaluate(bop->right);
+    value *left = bop->left->evaluate(bop->left, rt);
+    value *right = bop->right->evaluate(bop->right, rt);
     
     if (!binop_validate("DIVIDE", left->type, right->type, numbers)) {
         return NULL;
@@ -534,13 +534,13 @@ value *eval_divide(expopnode *node)
 
 /* runtime for unary minus
  */
-value *eval_unary_minus(expopnode *node)
+value *eval_unary_minus(expopnode *node, runtime *rt)
 {
     unop *uop = (unop *)node;
     
     value *ret = NULL;
     
-    value *val = uop->value->evaluate(uop->value);
+    value *val = uop->value->evaluate(uop->value, rt);
     
     if (val) {
         if (val->type == TOK_NUMBER) {
@@ -657,7 +657,7 @@ expopnode *alloc_unop(token_type op, expopnode *value)
 
 /* Evaluate a literal
  */
-value *eval_literal(expopnode *node)
+value *eval_literal(expopnode *node, runtime *rt)
 {
     litop *lop = (litop *)node;
     return lop->literal;
@@ -685,9 +685,10 @@ expopnode *alloc_literal(value *value)
 
 /* evalute a variable reference
  */
-value *eval_varref(expopnode *node)
+value *eval_varref(expopnode *node, runtime *rt)
 {
-    return NULL;
+    varref *var = (varref *)node;
+    return runtime_getvar(rt, var->varname);
 }
 
 /* free a variable reference
