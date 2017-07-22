@@ -4,15 +4,6 @@
 
 #include "stringutil.h"
 
-/* in place upper case a string
- */
-void strupper(char *s)
-{
-    for (; *s; s++) {
-        *s = toupper(*s);
-    }
-}
-
 /* in place remove leading and trailing whitespace
  */
 void strtrim(char *s)

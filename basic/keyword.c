@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 
 #include "keyword.h"
 #include "let.h"
@@ -22,14 +23,8 @@ static keyword keywords[] =
  */
 keyword *kw_find(const char *id)
 {
-    char upper_id[MAX_ID];
-    
-    strncpy(upper_id, id, MAX_ID - 1);
-    upper_id[MAX_ID - 1] = '\0';
-    strupper(upper_id);
-    
     for (keyword *kw = &keywords[0]; kw->id != NULL; kw++) {
-        if (strcmp(upper_id, kw->id) == 0) {
+        if (strcasecmp(id, kw->id) == 0) {
             return kw;
         }
     }
