@@ -204,31 +204,27 @@ void parser_set_error(parser *prs, const char *fmt, ...)
  */
 char *parser_describe_token(parser *prs)
 {
-    if (is_operator(prs->token_type)) {
+    if (is_operator(prs->token_type) || prs->token_type == TOK_IDENTIFIER) {
         return parser_extract_token_text(prs);
     }
     
-    char *text = "unknown";
+    char *text = "UNKNOWN";
     
     switch (prs->token_type) {
     case TOK_END:
-        text = "end of input";
+        text = "END OF INPUT";
         break;
         
     case TOK_ERROR:
-        text = "invalid token";
+        text = "INVALID TOKEN";
         break;
     
     case TOK_NUMBER:
-        text = "number";
-        break;
-        
-    case TOK_IDENTIFIER:
-        text = "identifier";
+        text = "NUMBER";
         break;
         
     case TOK_STRING:
-        text = "string literal";
+        text = "STRING LITERAL";
         break;
         
     default:
@@ -236,6 +232,70 @@ char *parser_describe_token(parser *prs)
     }
     
     return safe_strdup(text);
+}
+
+/* Excepts to see an identifier with the text in id (modulo case)
+ * On success, skips the token and returns non-zero
+ * On failure, sets a parser error and returns zero
+ *
+ * Does NOT (cannot) determine if a statement with the line
+ * number actually exists.
+ */
+int parser_expect_id(parser *prs, const char *id)
+{
+    int found = prs->token_type == TOK_IDENTIFIER;
+    
+    if (found) {
+        char *text = parser_extract_token_text(prs);
+        found = strcasecmp(text, id) == 0;
+        free(text);
+    }
+    
+    if (!found) {
+        char *what = parser_describe_token(prs);
+        parser_set_error(prs, "%s EXPECTED; FOUND %s", id, what);
+        free(what);
+        return 0;
+    }
+    
+    parser_next(prs);
+    return 1;
+}
+
+/* Expects to see an integer line number
+ * On success, skips the number and returns the line number
+ * On failure, sets a parser error and returns -1
+ */
+int parser_expect_line_no(parser *prs)
+{
+    if (!isdigit(parser_peek(prs))) {
+        parser_set_error(prs, "LINE NUMBER EXPECTED");
+        return -1;
+    }
+    
+    int line = 0;
+    while (isdigit(parser_peek(prs))) {
+        char ch = parser_get(prs);
+        line = line * 10 + (ch - '0');
+    }
+    
+    parse_next_token(prs);
+    
+    return line;
+}
+
+/* Expect the current token to be end of line.
+ * Does not advance the token in either case.
+ * Returns 1 on success, 0 on failure (and sets parser error)
+ */
+int parser_expect_end_of_line(parser *prs)
+{
+    if (prs->token_type != TOK_END) {
+        parser_set_error(prs, "END OF STATEMENT EXPECTED");
+        return 0;
+    }
+    
+    return 1;
 }
 
 

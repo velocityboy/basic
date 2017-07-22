@@ -39,6 +39,7 @@ struct print_node
 };
 
 static void print_execute(statement_body *body, runtime *rt);
+static int print_number(const char *fmt, double number);
 static void print_free(statement_body *body);
 static print_part *part_alloc(expression *exp, print_spacing spacing);
 static void part_free(print_part *part);

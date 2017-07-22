@@ -14,6 +14,10 @@ const int VARCOUNT = 26 * 27;
 struct runtime
 {
     value *vars[2 * VARCOUNT];
+    statement **statements;
+    statement *goto_statement;
+    int allocated_statements;
+    int used_statements;
     char *error;
 };
 
@@ -23,7 +27,7 @@ static int var_is_string(int varidx)
 }
 
 static int var_ref(const char *var);
-
+static void build_statement_index(runtime *rt, program *pgm);
 
 /* Allocate a runtime environment
  */
@@ -46,11 +50,15 @@ void runtime_run(runtime *rt, program *pgm)
 {
     free(rt->error);
     rt->error = NULL;
+    rt->goto_statement = NULL;
+    
+    build_statement_index(rt, pgm);
     
     statement *stmt = pgm->head;
     
     while (stmt)
     {
+        rt->goto_statement = NULL;
         stmt->body->execute(stmt->body, rt);
         
         if (rt->error) {
@@ -65,7 +73,11 @@ void runtime_run(runtime *rt, program *pgm)
             break;
         }
         
-        stmt = stmt->next;
+        if (rt->goto_statement) {
+            stmt = rt->goto_statement;
+        } else {
+            stmt = stmt->next;
+        }
     }
 }
 
@@ -132,6 +144,32 @@ int runtime_setvar(runtime *rt, const char *var, value *value)
     return 1;
 }
 
+/* Sets the next statement to execute when the current statment
+ * finishes. Sets a runtime error if the target line number doesn't
+ * exist.
+ */
+void runtime_goto(runtime *rt, int line_no)
+{
+    int low = 0;
+    int high = rt->used_statements - 1;
+    
+    while (low <= high) {
+        int m = (low + high) / 2;
+        int line_at_m = rt->statements[m]->line;
+        
+        if (line_at_m < line_no) {
+            low = m + 1;
+        } else if (line_at_m > line_no) {
+            high = m - 1;
+        } else {
+            rt->goto_statement = rt->statements[m];
+            return;
+        }
+    }
+    
+    runtime_set_error(rt, "LINE NUMBER %d DOES NOT EXIST", line_no);
+}
+
 /* Parse a variable reference
  * Returns a variable reference or -1 if invalid
  */
@@ -173,5 +211,31 @@ int var_ref(const char *var)
     }
 
     return base + 26 + 26 * (toupper(var[0] - 'A')) + toupper(var[1] - 'Z');
+}
+
+/* Builds an array version of the statment list. Since we know the 
+ * list is in sorted statement order, we can than bsearch it on line
+ * number.
+ */
+void build_statement_index(runtime *rt, program *pgm)
+{
+    int count = 0;
+    
+    for (statement *p = pgm->head; p; p = p->next) {
+        count++;
+    }
+    
+    if (count > rt->allocated_statements) {
+        free(rt->statements);
+        rt->statements = safe_calloc(count, sizeof(rt->statements[0]));
+        rt->allocated_statements = count;
+    }
+    
+    rt->used_statements = count;
+    
+    count = 0;
+    for (statement *p = pgm->head; p; p = p->next) {
+        rt->statements[count++] = p;
+    }
 }
 

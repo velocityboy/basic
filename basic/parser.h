@@ -75,6 +75,9 @@ extern void parse_next_token(parser *prs);
 extern char *parser_extract_token_text(parser *prs);
 extern void parser_set_error(parser *prs, const char *fmt, ...);
 extern char *parser_describe_token(parser *prs);
+extern int parser_expect_id(parser *prs, const char *id);
+extern int parser_expect_line_no(parser *prs);
+extern int parser_expect_end_of_line(parser *prs);
 
 
 
