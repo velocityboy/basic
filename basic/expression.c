@@ -44,7 +44,7 @@ struct varref
     char *varname;
 };
 
-static int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid);
+static int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid, runtime *rt);
 static value *eval_less(expopnode *node, runtime *rt);
 static value *eval_greater(expopnode *node, runtime *rt);
 static value *eval_lesseq(expopnode *node, runtime *rt);
@@ -298,7 +298,10 @@ static binop_argtypes numbers_and_strings[] =
     { TYPE_NUMBER, TYPE_NUMBER, 1 },
 };
 
-int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid)
+/* validate the args that are passed to a binary operator are a compatible
+ * type pair
+ */
+int binop_validate(const char *op, valuetype left, valuetype right, binop_argtypes *valid, runtime *rt)
 {
     for (int i = 0; ; i++, valid++)
     {
@@ -311,7 +314,7 @@ int binop_validate(const char *op, valuetype left, valuetype right, binop_argtyp
         }
     }
     
-    fprintf(stderr, "\nCANNOT %s %s AND %s\n", op, value_describe_type(left), value_describe_type(right));
+    runtime_set_error(rt, "CANNOT %s %s AND %s", op, value_describe_type(left), value_describe_type(right));
     
     return 0;
 }
@@ -324,7 +327,7 @@ value *eval_less(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -347,7 +350,7 @@ value *eval_greater(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -370,7 +373,7 @@ value *eval_lesseq(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -393,7 +396,7 @@ value *eval_greatereq(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -416,7 +419,7 @@ value *eval_equal(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -441,7 +444,7 @@ value *eval_notequal(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("COMPARE", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -466,7 +469,7 @@ value *eval_plus(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("ADD", left->type, right->type, numbers_and_strings)) {
+    if (!binop_validate("ADD", left->type, right->type, numbers_and_strings, rt)) {
         return NULL;
     }
     
@@ -495,7 +498,7 @@ value *eval_minus(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("SUBTRACT", left->type, right->type, numbers)) {
+    if (!binop_validate("SUBTRACT", left->type, right->type, numbers, rt)) {
         return NULL;
     }
     
@@ -510,7 +513,7 @@ value *eval_times(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("TIMES", left->type, right->type, numbers)) {
+    if (!binop_validate("TIMES", left->type, right->type, numbers, rt)) {
         return NULL;
     }
     
@@ -525,7 +528,7 @@ value *eval_divide(expopnode *node, runtime *rt)
     value *left = bop->left->evaluate(bop->left, rt);
     value *right = bop->right->evaluate(bop->right, rt);
     
-    if (!binop_validate("DIVIDE", left->type, right->type, numbers)) {
+    if (!binop_validate("DIVIDE", left->type, right->type, numbers, rt)) {
         return NULL;
     }
     

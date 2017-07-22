@@ -64,6 +64,8 @@ void print_parse(parser *prs, statement *stmt)
         } else if (prs->token_type == TOK_COMMA) {
             spacing = SPC_TAB;
             parse_next_token(prs);
+        } else if (prs->token_type != TOK_END) {
+            parser_set_error(prs, "EXPECTED , or ; BETWEEN PRINT ITEMS");            
         }
         
         print_part *part = part_alloc(exp, spacing);

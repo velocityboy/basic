@@ -1,4 +1,6 @@
 #include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "program.h"
@@ -12,6 +14,7 @@ const int VARCOUNT = 26 * 27;
 struct runtime
 {
     value *vars[2 * VARCOUNT];
+    char *error;
 };
 
 static int var_is_string(int varidx)
@@ -41,13 +44,53 @@ void runtime_free(runtime *rt)
  */
 void runtime_run(runtime *rt, program *pgm)
 {
+    free(rt->error);
+    rt->error = NULL;
+    
     statement *stmt = pgm->head;
     
     while (stmt)
     {
         stmt->body->execute(stmt->body, rt);
+        
+        if (rt->error) {
+            fprintf(stderr, "\n%s", rt->error);
+            if (stmt->line >= 0) {
+                fprintf(stderr, " IN %d", stmt->line);
+            }
+            fprintf(stderr, "\n");
+            
+            free(rt->error);
+            rt->error = NULL;
+            break;
+        }
+        
         stmt = stmt->next;
     }
+}
+
+/* Set a runtime error, which will cause the program to abort
+ * after the current statment
+ */
+void runtime_set_error(runtime *rt, const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);    
+    int n = vsnprintf(NULL, 0, fmt, args);
+    char *msg = safe_malloc(n + 1);
+
+    va_start(args, fmt);
+    vsnprintf(msg, n + 1, fmt, args);
+    
+    if (rt->error) {
+        free(rt->error);
+        rt->error = NULL;
+    }
+    
+    rt->error = msg;
+    
+    va_end(args);
 }
 
 /* Get a variable
