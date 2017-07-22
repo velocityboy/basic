@@ -1,4 +1,6 @@
+#include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "assert.h"
 #include "expression.h"
@@ -127,7 +129,7 @@ void print_execute(statement_body *body, runtime *rt)
             break;
         
         case TYPE_NUMBER:
-            col += printf("%lf", val->number);
+            col += print_number("%lf", val->number);
             break;
         
         case TYPE_STRING:
@@ -149,6 +151,65 @@ void print_execute(statement_body *body, runtime *rt)
     
     putchar('\n');
 }
+
+/* Format and print a number. Mostly we want to get rid of
+ * trailing zeroes past the decimal (1.20000 should be 1.2)
+ * which printf format strings don't reresent.
+ */
+int print_number(const char *fmt, double number)
+{
+    char str[32];
+    char *strp = str;
+    
+    int len = snprintf(str, sizeof(str), fmt, number);
+    if (len > sizeof(str)) {
+        strp = safe_malloc(len + 1);
+        snprintf(strp, len + 1, fmt, number);
+    }
+    
+    char *p = strp + len - 1;
+    
+    while (p >= strp && *p == '0') {
+        p--;
+    }
+    p++;
+    
+    if (p < strp + len) {
+        /* p now points at the first of a trailing string of
+         * zeroes. make sure we're actually looking at digits
+         * past a decimal point (we could have exponential 
+         * notation and something like 1.0E+10)
+         */
+        char *q = p;
+        
+        while (q >= strp) {
+            if (!isdigit(*q)) {
+                break;
+            }
+            q--;
+        }
+        
+        if (q >= strp && *q == '.') {
+            if (p == q + 1) {
+                /* there are no non-zero digits to the right of the decimal
+                 * point, so remove that as well.
+                 */
+                p--;
+            }
+            
+            *p = '\0';
+        }
+    }
+    
+    len = printf("%s", strp);
+    
+    if (strp != str) {
+        free(strp);
+    }
+    
+    return len;
+}
+
 
 /* allocate a part
  */
