@@ -2,6 +2,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "goto.h"
 #include "if.h"
 #include "keyword.h"
 #include "let.h"
@@ -13,6 +14,7 @@
 
 static keyword keywords[] =
 {
+    { "GOTO", KWFL_OK_IN_STMT, &goto_parse },
     { "IF", KWFL_OK_IN_STMT, &if_parse },
     { "LET", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &let_parse },
     { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },

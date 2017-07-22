@@ -24,5 +24,6 @@ extern value *value_alloc_boolean(int v);
 extern value *value_alloc_string(char *s, int allocated);
 extern const char *value_describe_type(valuetype type);
 extern void value_free(value *v);
+extern value *value_clone(value *v);
 
 #endif /* value_h */

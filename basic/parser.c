@@ -263,11 +263,20 @@ int parser_expect_id(parser *prs, const char *id)
 }
 
 /* Expects to see an integer line number
+  *
+ * If previous_token is set, then we're in a state where the parser
+ * has already parsed a token from where we expect the line number.
+ * So we discard that token and start over.
+ *
  * On success, skips the number and returns the line number
  * On failure, sets a parser error and returns -1
  */
-int parser_expect_line_no(parser *prs)
+int parser_expect_line_no(parser *prs, int previous_token)
 {
+    if (previous_token) {
+        prs->parse_index = prs->token_start;
+    }
+    
     if (!isdigit(parser_peek(prs))) {
         parser_set_error(prs, "LINE NUMBER EXPECTED");
         return -1;

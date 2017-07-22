@@ -10,3 +10,4 @@
 50 print 1+"A"
 60 PRINT 1 / 2
 70 PRINT 1 - 2
+80 GOTO 10

@@ -251,7 +251,7 @@ expopnode *parse_paren_term(parser *prs)
     case TOK_STRING:
         text = parser_extract_token_text(prs);
         strunquote(text);
-        ret = alloc_literal(value_alloc_string(text, 1));
+        ret = alloc_literal(value_alloc_string(text, 0));
         parse_next_token(prs);
         break;
         
@@ -663,7 +663,7 @@ expopnode *alloc_unop(token_type op, expopnode *value)
 value *eval_literal(expopnode *node, runtime *rt)
 {
     litop *lop = (litop *)node;
-    return lop->literal;
+    return value_clone(lop->literal);
 }
 
 /* Free a literal

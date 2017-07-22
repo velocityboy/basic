@@ -63,3 +63,16 @@ const char *value_describe_type(valuetype type)
     return "UNKNOWN";
 }
 
+/* Clone a value
+ */
+value *value_clone(value *v)
+{
+    value *new_val = safe_calloc(1, sizeof(value));
+    *new_val = *v;
+  
+    if (new_val->type == TYPE_STRING) {
+        new_val->string = safe_strdup(new_val->string);
+    }
+  
+    return new_val;
+}

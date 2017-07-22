@@ -27,14 +27,14 @@ void if_parse(parser *prs, statement *stmt)
     
     if ((ifn->exp = expression_parse(prs)) == NULL ||
         !parser_expect_id(prs, "THEN") ||
-        (ifn->then_target = parser_expect_line_no(prs)) == -1) {
+        (ifn->then_target = parser_expect_line_no(prs, 0)) == -1) {
         if_free(&ifn->body);
         return;
     }
     
     if (prs->token_type != TOK_END) {
         if (!parser_expect_id(prs, "ELSE") ||
-            (ifn->else_target = parser_expect_line_no(prs)) == -1) {
+            (ifn->else_target = parser_expect_line_no(prs, 0)) == -1) {
             if_free(&ifn->body);
             return;
         }
