@@ -25,6 +25,7 @@
 		7BD7D0221F241009001EEDB6 /* gosub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0201F241009001EEDB6 /* gosub.c */; };
 		7BD7D0251F2440F9001EEDB6 /* for.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0231F2440F9001EEDB6 /* for.c */; };
 		7BD7D0281F251E48001EEDB6 /* builtins.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0261F251E48001EEDB6 /* builtins.c */; };
+		7BD7D02B1F252553001EEDB6 /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0291F252553001EEDB6 /* rem.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -80,6 +81,8 @@
 		7BD7D0241F2440F9001EEDB6 /* for.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = for.h; sourceTree = "<group>"; };
 		7BD7D0261F251E48001EEDB6 /* builtins.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = builtins.c; sourceTree = "<group>"; };
 		7BD7D0271F251E48001EEDB6 /* builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = builtins.h; sourceTree = "<group>"; };
+		7BD7D0291F252553001EEDB6 /* rem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rem.c; sourceTree = "<group>"; };
+		7BD7D02A1F252553001EEDB6 /* rem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rem.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +140,8 @@
 				7BD7CFFF1F202800001EEDB6 /* parser.h */,
 				7BD7D0061F2068A4001EEDB6 /* print.c */,
 				7BD7D0071F2068A4001EEDB6 /* print.h */,
+				7BD7D0291F252553001EEDB6 /* rem.c */,
+				7BD7D02A1F252553001EEDB6 /* rem.h */,
 				7BD7CFF41F202264001EEDB6 /* program.h */,
 				7BD7D0011F20290D001EEDB6 /* program.c */,
 				7BD7D00F1F21BC77001EEDB6 /* runtime.c */,
@@ -222,6 +227,7 @@
 				7BD7D0001F202800001EEDB6 /* parser.c in Sources */,
 				7BD7D0221F241009001EEDB6 /* gosub.c in Sources */,
 				7BD7D00E1F21923F001EEDB6 /* value.c in Sources */,
+				7BD7D02B1F252553001EEDB6 /* rem.c in Sources */,
 				7BD7D0081F2068A4001EEDB6 /* print.c in Sources */,
 				7BD7CFFA1F202500001EEDB6 /* safemem.c in Sources */,
 				7BD7D0191F23B8B3001EEDB6 /* if.c in Sources */,

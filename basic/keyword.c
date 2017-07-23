@@ -9,6 +9,7 @@
 #include "keyword.h"
 #include "let.h"
 #include "print.h"
+#include "rem.h"
 #include "safemem.h"
 #include "stringutil.h"
 
@@ -23,6 +24,7 @@ static keyword keywords[] =
     { "LET", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &let_parse },
     { "NEXT", KWFL_OK_IN_STMT, &next_parse },
     { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
+    { "REM", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &rem_parse },
     { "RETURN", KWFL_OK_IN_STMT, &return_parse },
 
     { NULL, 0 }

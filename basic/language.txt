@@ -2,11 +2,11 @@ X two letter variables $ means string, else float
 X LET
 - READ/DATA
 X IF THEN ELSE with line numbers
-- GOTO
-- GOSUB/RETURN
+X GOTO
+X GOSUB/RETURN
 - ON GOTO/GOSUB
 X PRINT
 - INPUT
-- standard math functions
-- REM
+X standard math functions
+X REM
 
