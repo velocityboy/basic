@@ -6,6 +6,7 @@
 
 typedef struct program program;
 typedef struct parser parser;
+typedef struct value value;
 typedef enum token_type token_type;
 
 enum token_type
@@ -76,6 +77,9 @@ extern char *parser_extract_token_text(parser *prs);
 extern void parser_set_error(parser *prs, const char *fmt, ...);
 extern char *parser_describe_token(parser *prs);
 extern int parser_expect_id(parser *prs, const char *id);
+extern int parser_expect_operator(parser *prs, token_type token);
+extern value *parser_expect_number(parser *prs);
+extern char *parser_expect_var(parser *prs);
 extern int parser_expect_line_no(parser *prs, int previous_token);
 extern int parser_expect_end_of_line(parser *prs);
 

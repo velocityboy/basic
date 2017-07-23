@@ -2,6 +2,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "for.h"
 #include "gosub.h"
 #include "goto.h"
 #include "if.h"
@@ -15,10 +16,12 @@
 
 static keyword keywords[] =
 {
+    { "FOR", KWFL_OK_IN_STMT, &for_parse },
     { "GOSUB", KWFL_OK_IN_STMT, &gosub_parse },
     { "GOTO", KWFL_OK_IN_STMT, &goto_parse },
     { "IF", KWFL_OK_IN_STMT, &if_parse },
     { "LET", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &let_parse },
+    { "NEXT", KWFL_OK_IN_STMT, &next_parse },
     { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
     { "RETURN", KWFL_OK_IN_STMT, &return_parse },
 

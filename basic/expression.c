@@ -208,7 +208,7 @@ expopnode *parse_mul_term(parser *prs)
     expopnode *value = parse_unary_term(prs);
     
     if (value && negate) {
-        value = alloc_unop(prs->token_type, value);
+        value = alloc_unop(TOK_MINUS, value);
     }
     
     return value;
@@ -546,7 +546,7 @@ value *eval_unary_minus(expopnode *node, runtime *rt)
     value *val = uop->value->evaluate(uop->value, rt);
     
     if (val) {
-        if (val->type == TOK_NUMBER) {
+        if (val->type == TYPE_NUMBER) {
             ret = value_alloc_number(-val->number);
         }
     }
@@ -651,7 +651,8 @@ expopnode *alloc_unop(token_type op, expopnode *value)
     assert(op == TOK_MINUS);
     
     unop *uop = safe_calloc(1, sizeof(unop));
-    
+
+    uop->value = value;
     uop->opnode.free = &free_unop;
     uop->opnode.evaluate = &eval_unary_minus;
     

@@ -9,6 +9,7 @@
 #include "safemem.h"
 #include "statement.h"
 #include "stringutil.h"
+#include "value.h"
 
 static inline char parser_peek(parser *prs)
 {
@@ -41,6 +42,7 @@ static void parse_operator(parser *prs);
 static int read_line(parser *prs, FILE *fp);
 static void append_line_buffer(parser *prs, char ch);
 static void grow_line_buffer(parser *prs);
+static const char *describe_token(token_type type);
 
 /* Allocate and initialize a parser
  */
@@ -234,6 +236,72 @@ char *parser_describe_token(parser *prs)
     return safe_strdup(text);
 }
 
+/* Return a static description of a particular token type
+ */
+const char *describe_token(token_type type)
+{
+    switch (type) {
+    case TOK_ERROR:
+        return "INVALID TOKEN";
+    
+    case TOK_NUMBER:
+        return "NUMBER";
+
+    case TOK_IDENTIFIER:
+        return "IDENTIFIER";
+        
+    case TOK_STRING:
+        return "STRING";
+    
+    case TOK_PLUS:
+        return "+";
+        
+    case TOK_MINUS:
+        return "-";
+        
+    case TOK_TIMES:
+        return "*";
+        
+    case TOK_DIVIDE:
+        return "/";
+    
+    case TOK_LPAREN:
+        return "(";
+        
+    case TOK_RPAREN:
+        return ")";
+        
+    case TOK_COMMA:
+        return ",";
+        
+    case TOK_SEMICOLON:
+        return ";";
+    
+    case TOK_EQUALS:
+        return "=";
+        
+    case TOK_LESSTHAN:
+        return "<";
+        
+    case TOK_GREATERTHAN:
+        return ">";
+        
+    case TOK_LESSEQUALS:
+        return "<=";
+        
+    case TOK_GREATEREQUALS:
+        return ">=";
+        
+    case TOK_NOTEQUALS:
+        return "<>";
+        
+    default:
+        break;
+    }
+    
+    return "UNKNOWN";
+}
+
 /* Excepts to see an identifier with the text in id (modulo case)
  * On success, skips the token and returns non-zero
  * On failure, sets a parser error and returns zero
@@ -245,7 +313,7 @@ int parser_expect_id(parser *prs, const char *id)
 {
     int found = prs->token_type == TOK_IDENTIFIER;
     
-    if (found) {
+    if (prs->token_type == TOK_IDENTIFIER) {
         char *text = parser_extract_token_text(prs);
         found = strcasecmp(text, id) == 0;
         free(text);
@@ -258,12 +326,67 @@ int parser_expect_id(parser *prs, const char *id)
         return 0;
     }
     
-    parser_next(prs);
+    parse_next_token(prs);
     return 1;
 }
 
+/* Expect a particular operator
+ */
+int parser_expect_operator(parser *prs, token_type token)
+{
+    if (prs->token_type == token) {
+        parse_next_token(prs);
+        return 1;
+    }
+    
+    char *found = parser_describe_token(prs);
+    parser_set_error(prs, "EXPECTED %s; FOUND %s", describe_token(token), found);
+    free(found);
+    return 0;
+}
+
+/* Expect a number. If found, return a value representing it.
+ * Otherwise, set a prser error and return NULL.
+ */
+value *parser_expect_number(parser *prs)
+{
+    if (prs->token_type == TOK_NUMBER) {
+        char *text = parser_extract_token_text(prs);
+        double num;
+        sscanf(text, "%lf", &num);
+        free(text);
+        
+        parse_next_token(prs);
+        
+        return value_alloc_number(num);
+    }
+    
+    char *found = parser_describe_token(prs);
+    parser_set_error(prs, "NUMBER EXPECTED; %s FOUND", found);
+    free(found);
+    return 0;
+}
+
+/* Expect a variable name
+ * Returns an allocated variable name or NULL
+ */
+char *parser_expect_var(parser *prs)
+{
+    if (prs->token_type == TOK_IDENTIFIER) {
+        char *text = parser_extract_token_text(prs);
+        parse_next_token(prs);
+        return text;
+    }
+    
+    char *what = parser_describe_token(prs);
+    parser_set_error(prs, "VARIABLE EXPECTED; FOUND %s", what);
+    free(what);
+    
+    return NULL;
+}
+
 /* Expects to see an integer line number
-  *
+ *
  * If previous_token is set, then we're in a state where the parser
  * has already parsed a token from where we expect the line number.
  * So we discard that token and start over.
