@@ -6,6 +6,7 @@
 #include "program.h"
 #include "runtime.h"
 #include "safemem.h"
+#include "scope.h"
 #include "statement.h"
 #include "value.h"
 
@@ -13,11 +14,13 @@ const int VARCOUNT = 26 * 27;
 
 struct runtime
 {
+    statement *curr_statement;
     value *vars[2 * VARCOUNT];
     statement **statements;
     statement *goto_statement;
     int allocated_statements;
     int used_statements;
+    scope_stack *scopes;
     char *error;
 };
 
@@ -34,6 +37,7 @@ static void build_statement_index(runtime *rt, program *pgm);
 runtime *runtime_alloc()
 {
     runtime *rt = calloc(1, sizeof(runtime));
+    rt->scopes = scope_stack_alloc();
     return rt;
 }
 
@@ -41,6 +45,7 @@ runtime *runtime_alloc()
  */
 void runtime_free(runtime *rt)
 {
+    scope_stack_free(rt->scopes);
     free(rt);
 }
 
@@ -53,11 +58,14 @@ void runtime_run(runtime *rt, program *pgm)
     rt->goto_statement = NULL;
     
     build_statement_index(rt, pgm);
+    scope_stack_clear(rt->scopes);
     
-    statement *stmt = pgm->head;
+    rt->curr_statement = pgm->head;
     
-    while (stmt)
+    while (rt->curr_statement)
     {
+        statement *stmt = rt->curr_statement;
+        
         rt->goto_statement = NULL;
         stmt->body->execute(stmt->body, rt);
         
@@ -74,9 +82,9 @@ void runtime_run(runtime *rt, program *pgm)
         }
         
         if (rt->goto_statement) {
-            stmt = rt->goto_statement;
+            rt->curr_statement = rt->goto_statement;
         } else {
-            stmt = stmt->next;
+            rt->curr_statement = stmt->next;
         }
     }
 }
@@ -170,6 +178,24 @@ void runtime_goto(runtime *rt, int line_no)
     runtime_set_error(rt, "LINE NUMBER %d DOES NOT EXIST", line_no);
 }
 
+/* Set the next statement directly
+ */
+void runtime_set_next_statement(runtime *rt, statement *stmt)
+{
+    rt->goto_statement = stmt;
+}
+
+/* Returns the next statement to be executed. Expected to be called
+ * in the context of an executing statement.
+ */
+statement *runtime_next_statement(runtime *rt)
+{
+    if (rt->curr_statement) {
+        return rt->curr_statement->next;
+    }
+    return NULL;
+}
+
 /* Parse a variable reference
  * Returns a variable reference or -1 if invalid
  */
@@ -239,3 +265,9 @@ void build_statement_index(runtime *rt, program *pgm)
     }
 }
 
+/* Returns the scope stack
+ */
+scope_stack *runtime_scope_stack(runtime *rt)
+{
+    return rt->scopes;
+}

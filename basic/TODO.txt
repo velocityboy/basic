@@ -4,3 +4,5 @@ x finish implementing operators and runtime errors
 x variables in runtime
 x LET statement
 - control flow
+- don't run if there are compile errors
+- factor out equality of values and use a tolerance so ints behave like ints

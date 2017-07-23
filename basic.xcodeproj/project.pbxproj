@@ -21,6 +21,8 @@
 		7BD7D0161F22FBAC001EEDB6 /* let.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0141F22FBAC001EEDB6 /* let.c */; };
 		7BD7D0191F23B8B3001EEDB6 /* if.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0171F23B8B3001EEDB6 /* if.c */; };
 		7BD7D01C1F23FE2D001EEDB6 /* goto.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D01A1F23FE2D001EEDB6 /* goto.c */; };
+		7BD7D01F1F2408CD001EEDB6 /* scope.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D01D1F2408CD001EEDB6 /* scope.c */; };
+		7BD7D0221F241009001EEDB6 /* gosub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0201F241009001EEDB6 /* gosub.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -68,6 +70,10 @@
 		7BD7D0181F23B8B3001EEDB6 /* if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if.h; sourceTree = "<group>"; };
 		7BD7D01A1F23FE2D001EEDB6 /* goto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = goto.c; sourceTree = "<group>"; };
 		7BD7D01B1F23FE2D001EEDB6 /* goto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = goto.h; sourceTree = "<group>"; };
+		7BD7D01D1F2408CD001EEDB6 /* scope.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = scope.c; sourceTree = "<group>"; };
+		7BD7D01E1F2408CD001EEDB6 /* scope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scope.h; sourceTree = "<group>"; };
+		7BD7D0201F241009001EEDB6 /* gosub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gosub.c; sourceTree = "<group>"; };
+		7BD7D0211F241009001EEDB6 /* gosub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gosub.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +111,8 @@
 				7BD7D0131F21C98D001EEDB6 /* TODO.txt */,
 				7BD7D0091F206D6F001EEDB6 /* expression.c */,
 				7BD7D00A1F206D6F001EEDB6 /* expression.h */,
+				7BD7D0201F241009001EEDB6 /* gosub.c */,
+				7BD7D0211F241009001EEDB6 /* gosub.h */,
 				7BD7D01A1F23FE2D001EEDB6 /* goto.c */,
 				7BD7D01B1F23FE2D001EEDB6 /* goto.h */,
 				7BD7D0171F23B8B3001EEDB6 /* if.c */,
@@ -125,6 +133,8 @@
 				7BD7D0101F21BC77001EEDB6 /* runtime.h */,
 				7BD7CFF81F202500001EEDB6 /* safemem.c */,
 				7BD7CFF91F202500001EEDB6 /* safemem.h */,
+				7BD7D01D1F2408CD001EEDB6 /* scope.c */,
+				7BD7D01E1F2408CD001EEDB6 /* scope.h */,
 				7BD7D0031F2029B6001EEDB6 /* statement.c */,
 				7BD7D0041F2029B6001EEDB6 /* statement.h */,
 				7BD7CFFB1F2025B3001EEDB6 /* stringutil.c */,
@@ -192,6 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BD7D01F1F2408CD001EEDB6 /* scope.c in Sources */,
 				7BD7D0111F21BC77001EEDB6 /* runtime.c in Sources */,
 				7BD7CFEB1F202095001EEDB6 /* main.c in Sources */,
 				7BD7CFF71F2023DC001EEDB6 /* keyword.c in Sources */,
@@ -199,6 +210,7 @@
 				7BD7D0021F20290D001EEDB6 /* program.c in Sources */,
 				7BD7CFFD1F2025B3001EEDB6 /* stringutil.c in Sources */,
 				7BD7D0001F202800001EEDB6 /* parser.c in Sources */,
+				7BD7D0221F241009001EEDB6 /* gosub.c in Sources */,
 				7BD7D00E1F21923F001EEDB6 /* value.c in Sources */,
 				7BD7D0081F2068A4001EEDB6 /* print.c in Sources */,
 				7BD7CFFA1F202500001EEDB6 /* safemem.c in Sources */,
