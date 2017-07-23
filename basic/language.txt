@@ -6,7 +6,7 @@ X GOTO
 X GOSUB/RETURN
 - ON GOTO/GOSUB
 X PRINT
-- INPUT
+X INPUT
 X standard math functions
 X REM
 

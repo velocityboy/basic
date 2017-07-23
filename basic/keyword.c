@@ -6,6 +6,7 @@
 #include "gosub.h"
 #include "goto.h"
 #include "if.h"
+#include "input.h"
 #include "keyword.h"
 #include "let.h"
 #include "print.h"
@@ -21,6 +22,7 @@ static keyword keywords[] =
     { "GOSUB", KWFL_OK_IN_STMT, &gosub_parse },
     { "GOTO", KWFL_OK_IN_STMT, &goto_parse },
     { "IF", KWFL_OK_IN_STMT, &if_parse },
+    { "INPUT", KWFL_OK_IN_STMT, &input_parse },
     { "LET", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &let_parse },
     { "NEXT", KWFL_OK_IN_STMT, &next_parse },
     { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
