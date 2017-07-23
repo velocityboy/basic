@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 
+#include "builtins.h"
 #include "expression.h"
 #include "parser.h"
 #include "runtime.h"
@@ -10,6 +11,8 @@
 
 typedef struct binop binop;
 typedef struct binop_argtypes binop_argtypes;
+typedef struct funarg funarg;
+typedef struct funop funop;
 typedef struct litop litop;
 typedef struct unop unop;
 typedef struct varref varref;
@@ -38,6 +41,20 @@ struct unop
     expopnode *value;
 };
 
+struct funarg
+{
+    funarg *next;
+    expression *exp;
+};
+
+struct funop
+{
+    expopnode opnode;
+    char *name;
+    int args;
+    funarg *arglist;
+};
+
 struct varref
 {
     expopnode opnode;
@@ -63,6 +80,7 @@ static expopnode *parse_sum_term(parser *prs);
 static expopnode *parse_mul_term(parser *prs);
 static expopnode *parse_unary_term(parser *prs);
 static expopnode *parse_paren_term(parser *prs);
+static expopnode *parse_function_call(parser *prs, char *fn_name);
 
 static void free_binop(expopnode *node);
 static expopnode *alloc_binop(token_type op, expopnode *left, expopnode *right);
@@ -76,6 +94,10 @@ static expopnode *alloc_literal(value *value);
 static value *eval_varref(expopnode *node, runtime *rt);
 static void free_varref(expopnode *node);
 static expopnode *alloc_varref(char *varname);
+
+static void cleanup_funargs(int argc, value **argv);
+static value *eval_function(expopnode *node, runtime *rt);
+static void free_function(expopnode *node);
 
 
 /* top level expression parser
@@ -251,7 +273,7 @@ expopnode *parse_paren_term(parser *prs)
     case TOK_STRING:
         text = parser_extract_token_text(prs);
         strunquote(text);
-        ret = alloc_literal(value_alloc_string(text, 0));
+        ret = alloc_literal(value_alloc_string(text, VAL_ALLOCATED));
         parse_next_token(prs);
         break;
         
@@ -265,9 +287,14 @@ expopnode *parse_paren_term(parser *prs)
         
     case TOK_IDENTIFIER:
         text = parser_extract_token_text(prs);
-        ret = alloc_varref(text);
-        /* do not free(text) - varref owns it now */
         parse_next_token(prs);
+        if (prs->token_type == TOK_LPAREN) {
+            ret = parse_function_call(prs, text);
+        } else {
+            ret = alloc_varref(text);
+        }
+        /* do not free(text) - it's owned by either the function call or the varref 
+         */
         break;
     
     default:
@@ -279,6 +306,66 @@ expopnode *parse_paren_term(parser *prs)
 
     return ret;
 }
+
+/* Parse a function call of the form '(' exp [ ',' exp ] * ')'
+ */
+expopnode *parse_function_call(parser *prs, char *fn_name)
+{
+    if (!parser_expect_operator(prs, TOK_LPAREN)) {
+        return NULL;
+    }
+    
+    funop *fun = safe_calloc(1, sizeof(funop));
+    fun->name = fn_name;
+    fun->opnode.evaluate = &eval_function;
+    fun->opnode.free = &free_function;
+
+    if (prs->token_type == TOK_RPAREN) {
+        parse_next_token(prs);
+        return &fun->opnode;
+    }
+
+    funarg *tail = NULL;
+    int valid = 1;
+    
+    while(1) {
+        expression *exp = expression_parse(prs);
+        if (exp == NULL) {
+            valid = 0;
+            break;
+        }
+        
+        fun->args++;
+        funarg *arg = safe_calloc(1, sizeof(funarg));
+        arg->exp = exp;
+        
+        if (tail == NULL) {
+            fun->arglist = arg;
+        } else {
+            tail->next = arg;
+        }
+        tail = arg;
+        
+        if (prs->token_type == TOK_RPAREN) {
+            parse_next_token(prs);
+            break;
+        } else if (prs->token_type == TOK_COMMA) {
+            parse_next_token(prs);
+        } else {
+            parser_set_error(prs, "SYNTAX ERROR IN FUNCTION CALL");
+            valid = 0;
+            break;
+        }
+    }
+    
+    if (!valid) {
+        free_function(&fun->opnode);
+        return NULL;
+    }
+    
+    return &fun->opnode;
+}
+
 
 struct binop_argtypes
 {
@@ -482,7 +569,7 @@ value *eval_plus(expopnode *node, runtime *rt)
         char *temp = safe_malloc(n);
         strncpy(temp, left->string, n);
         strncpy(temp + llen, right->string, n - llen);
-        ret = value_alloc_string(temp, 1);
+        ret = value_alloc_string(temp, VAL_COPY);
     } else if (left->type == TYPE_NUMBER && right->type == TYPE_NUMBER) {
         ret = value_alloc_number(left->number + right->number);
     }
@@ -717,3 +804,59 @@ expopnode *alloc_varref(char *varname)
     return &var->opnode;
 }
 
+/* Clean up arguments evaluated for a function call
+ */
+void cleanup_funargs(int argc, value **argv)
+{
+    for (int i = 0; i < argc; ++i) {
+        value_free(argv[i]);
+    }
+    free(argv);
+}
+
+/* Evaluate a function call
+ */
+value *eval_function(expopnode *node, runtime *rt)
+{
+    funop *fun = (funop *)node;
+    value **argv = safe_calloc(fun->args, sizeof(value*));
+    
+    int argidx = 0;
+    for (funarg *arg = fun->arglist; arg; arg = arg->next) {
+        if ((argv[argidx++] = expression_evaluate(arg->exp, rt)) == NULL) {
+            break;
+        }
+    }
+    
+    if (argidx < fun->args) {
+        /* argument evaluation failed, which will have already
+         * set a runtime error
+         */
+        cleanup_funargs(fun->args, argv);
+        return NULL;
+    }
+    
+    value *ret = builtin_execute(rt, fun->name, fun->args, argv);
+    
+    cleanup_funargs(fun->args, argv);
+    
+    return ret;
+}
+
+/* Free a function call node
+ */
+void free_function(expopnode *node)
+{
+    funop *fun = (funop *)node;
+    
+    free(fun->name);
+    
+    while (fun->arglist) {
+        funarg *next = fun->arglist->next;
+        expression_free(fun->arglist->exp);
+        free(fun->arglist);
+        fun->arglist = next;
+    }
+    
+    free(fun);
+}

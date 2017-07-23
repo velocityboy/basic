@@ -1,6 +1,7 @@
 #ifndef value_h
 #define value_h
 
+typedef enum valuealloc valuealloc;
 typedef enum valuetype valuetype;
 typedef struct value value;
 
@@ -19,9 +20,14 @@ struct value
     char *string;
 };
 
+enum valuealloc {
+    VAL_ALLOCATED,
+    VAL_COPY,
+};
+
 extern value *value_alloc_number(double v);
 extern value *value_alloc_boolean(int v);
-extern value *value_alloc_string(char *s, int allocated);
+extern value *value_alloc_string(char *s, valuealloc allocated);
 extern const char *value_describe_type(valuetype type);
 extern void value_free(value *v);
 extern value *value_clone(value *v);

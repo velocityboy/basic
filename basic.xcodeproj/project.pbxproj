@@ -24,6 +24,7 @@
 		7BD7D01F1F2408CD001EEDB6 /* scope.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D01D1F2408CD001EEDB6 /* scope.c */; };
 		7BD7D0221F241009001EEDB6 /* gosub.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0201F241009001EEDB6 /* gosub.c */; };
 		7BD7D0251F2440F9001EEDB6 /* for.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0231F2440F9001EEDB6 /* for.c */; };
+		7BD7D0281F251E48001EEDB6 /* builtins.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0261F251E48001EEDB6 /* builtins.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -77,6 +78,8 @@
 		7BD7D0211F241009001EEDB6 /* gosub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gosub.h; sourceTree = "<group>"; };
 		7BD7D0231F2440F9001EEDB6 /* for.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = for.c; sourceTree = "<group>"; };
 		7BD7D0241F2440F9001EEDB6 /* for.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = for.h; sourceTree = "<group>"; };
+		7BD7D0261F251E48001EEDB6 /* builtins.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = builtins.c; sourceTree = "<group>"; };
+		7BD7D0271F251E48001EEDB6 /* builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = builtins.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +115,8 @@
 				7BD7D0121F21C98D001EEDB6 /* hello.bas */,
 				7BD7CFF31F2021CA001EEDB6 /* test.bas */,
 				7BD7D0131F21C98D001EEDB6 /* TODO.txt */,
+				7BD7D0261F251E48001EEDB6 /* builtins.c */,
+				7BD7D0271F251E48001EEDB6 /* builtins.h */,
 				7BD7D0091F206D6F001EEDB6 /* expression.c */,
 				7BD7D00A1F206D6F001EEDB6 /* expression.h */,
 				7BD7D0231F2440F9001EEDB6 /* for.c */,
@@ -220,6 +225,7 @@
 				7BD7D0081F2068A4001EEDB6 /* print.c in Sources */,
 				7BD7CFFA1F202500001EEDB6 /* safemem.c in Sources */,
 				7BD7D0191F23B8B3001EEDB6 /* if.c in Sources */,
+				7BD7D0281F251E48001EEDB6 /* builtins.c in Sources */,
 				7BD7D0051F2029B6001EEDB6 /* statement.c in Sources */,
 				7BD7D01C1F23FE2D001EEDB6 /* goto.c in Sources */,
 				7BD7D0251F2440F9001EEDB6 /* for.c in Sources */,

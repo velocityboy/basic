@@ -27,11 +27,11 @@ value *value_alloc_boolean(int v)
  * if allocated is set then the caller has already allocated the string
  * and the value should take ownership
  */
-value *value_alloc_string(char *s, int allocated)
+value *value_alloc_string(char *s, valuealloc allocated)
 {
     value *val = safe_calloc(1, sizeof(value));
     val->type = TYPE_STRING;
-    if (allocated) {
+    if (allocated == VAL_ALLOCATED) {
         val->string = s;
     } else {
         val->string = safe_strdup(s);
