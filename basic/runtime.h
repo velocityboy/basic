@@ -8,9 +8,10 @@ typedef struct scope_stack scope_stack;
 typedef struct statement statement;
 typedef struct value value;
 
-extern runtime *runtime_alloc();
+extern runtime *runtime_alloc(program *pgm);
 extern void runtime_free(runtime *rt);
-extern void runtime_run(runtime *rt, program *pgm);
+extern void runtime_run(runtime *rt);
+extern int runtime_execute_statement(runtime *rt, statement *stmt);
 extern void runtime_set_error(runtime *rt, const char *fmt, ...);
 extern value *runtime_getvar(runtime *rt, const char *var);
 extern int runtime_setvar(runtime *rt, const char *var, value *value);

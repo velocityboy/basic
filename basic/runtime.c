@@ -14,6 +14,7 @@ const int VARCOUNT = 26 * 27;
 
 struct runtime
 {
+    program *pgm;
     statement *curr_statement;
     value *vars[2 * VARCOUNT];
     statement **statements;
@@ -34,9 +35,10 @@ static void build_statement_index(runtime *rt, program *pgm);
 
 /* Allocate a runtime environment
  */
-runtime *runtime_alloc()
+runtime *runtime_alloc(program *pgm)
 {
     runtime *rt = calloc(1, sizeof(runtime));
+    rt->pgm = pgm;
     rt->scopes = scope_stack_alloc();
     return rt;
 }
@@ -49,35 +51,26 @@ void runtime_free(runtime *rt)
     free(rt);
 }
 
-/* Run a program
+/* Run the program
  */
-void runtime_run(runtime *rt, program *pgm)
+void runtime_run(runtime *rt)
 {
     free(rt->error);
     rt->error = NULL;
     rt->goto_statement = NULL;
     
-    build_statement_index(rt, pgm);
+    build_statement_index(rt, rt->pgm);
     scope_stack_clear(rt->scopes);
     
-    rt->curr_statement = pgm->head;
+    rt->curr_statement = rt->pgm->head;
     
     while (rt->curr_statement)
     {
         statement *stmt = rt->curr_statement;
         
         rt->goto_statement = NULL;
-        stmt->body->execute(stmt->body, rt);
         
-        if (rt->error) {
-            fprintf(stderr, "\n%s", rt->error);
-            if (stmt->line >= 0) {
-                fprintf(stderr, " IN %d", stmt->line);
-            }
-            fprintf(stderr, "\n");
-            
-            free(rt->error);
-            rt->error = NULL;
+        if (!runtime_execute_statement(rt, stmt)) {
             break;
         }
         
@@ -88,6 +81,30 @@ void runtime_run(runtime *rt, program *pgm)
         }
     }
 }
+
+/* Execute one statement, possibly printing a runtime error
+ * Returns 1 on success, else 0
+ */
+int runtime_execute_statement(runtime *rt, statement *stmt)
+{
+    stmt->body->execute(stmt->body, rt);
+    
+    if (rt->error) {
+        fprintf(stderr, "\n%s", rt->error);
+        if (stmt->line >= 0) {
+            fprintf(stderr, " IN %d", stmt->line);
+        }
+        fprintf(stderr, "\n");
+        
+        free(rt->error);
+        rt->error = NULL;
+        
+        return 0;
+    }
+    
+    return 1;
+}
+
 
 /* Set a runtime error, which will cause the program to abort
  * after the current statment

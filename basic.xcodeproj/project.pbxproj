@@ -27,6 +27,7 @@
 		7BD7D0281F251E48001EEDB6 /* builtins.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0261F251E48001EEDB6 /* builtins.c */; };
 		7BD7D02B1F252553001EEDB6 /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0291F252553001EEDB6 /* rem.c */; };
 		7BD7D02E1F252980001EEDB6 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D02C1F252980001EEDB6 /* input.c */; };
+		7BD7D0311F2536B6001EEDB6 /* run.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D02F1F2536B6001EEDB6 /* run.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -86,6 +87,8 @@
 		7BD7D02A1F252553001EEDB6 /* rem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rem.h; sourceTree = "<group>"; };
 		7BD7D02C1F252980001EEDB6 /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = input.c; sourceTree = "<group>"; };
 		7BD7D02D1F252980001EEDB6 /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
+		7BD7D02F1F2536B6001EEDB6 /* run.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = run.c; sourceTree = "<group>"; };
+		7BD7D0301F2536B6001EEDB6 /* run.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = run.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,10 +148,12 @@
 				7BD7CFFF1F202800001EEDB6 /* parser.h */,
 				7BD7D0061F2068A4001EEDB6 /* print.c */,
 				7BD7D0071F2068A4001EEDB6 /* print.h */,
-				7BD7D0291F252553001EEDB6 /* rem.c */,
-				7BD7D02A1F252553001EEDB6 /* rem.h */,
 				7BD7CFF41F202264001EEDB6 /* program.h */,
 				7BD7D0011F20290D001EEDB6 /* program.c */,
+				7BD7D0291F252553001EEDB6 /* rem.c */,
+				7BD7D02A1F252553001EEDB6 /* rem.h */,
+				7BD7D02F1F2536B6001EEDB6 /* run.c */,
+				7BD7D0301F2536B6001EEDB6 /* run.h */,
 				7BD7D00F1F21BC77001EEDB6 /* runtime.c */,
 				7BD7D0101F21BC77001EEDB6 /* runtime.h */,
 				7BD7CFF81F202500001EEDB6 /* safemem.c */,
@@ -228,6 +233,7 @@
 				7BD7CFF71F2023DC001EEDB6 /* keyword.c in Sources */,
 				7BD7D0161F22FBAC001EEDB6 /* let.c in Sources */,
 				7BD7D0021F20290D001EEDB6 /* program.c in Sources */,
+				7BD7D0311F2536B6001EEDB6 /* run.c in Sources */,
 				7BD7CFFD1F2025B3001EEDB6 /* stringutil.c in Sources */,
 				7BD7D0001F202800001EEDB6 /* parser.c in Sources */,
 				7BD7D0221F241009001EEDB6 /* gosub.c in Sources */,

@@ -11,6 +11,7 @@
 #include "let.h"
 #include "print.h"
 #include "rem.h"
+#include "run.h"
 #include "safemem.h"
 #include "stringutil.h"
 
@@ -27,6 +28,7 @@ static keyword keywords[] =
     { "NEXT", KWFL_OK_IN_STMT, &next_parse },
     { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
     { "REM", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &rem_parse },
+    { "RUN", KWFL_OK_IN_REPL, &run_parse },
     { "RETURN", KWFL_OK_IN_STMT, &return_parse },
 
     { NULL, 0 }

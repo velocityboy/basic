@@ -6,8 +6,10 @@
 
 typedef struct program program;
 typedef struct parser parser;
-typedef struct value value;
+typedef struct statement statement;
+typedef enum source source;
 typedef enum token_type token_type;
+typedef struct value value;
 
 enum token_type
 {
@@ -41,6 +43,12 @@ enum token_type
     TOK_LASTOP = TOK_NOTEQUALS,
 };
 
+enum source
+{
+    SRC_FILE,
+    SRC_REPL
+};
+
 static inline int is_operator(token_type type)
 {
     return (type >= TOK_FIRSTOP && type <= TOK_LASTOP);
@@ -72,6 +80,7 @@ static inline int parser_error(parser *prs)
 extern parser *parser_alloc();
 extern void parser_free(parser *p);
 extern int parser_parse_file(parser *prs, FILE *fp, program *pgm);
+extern int parser_parse_repl_line(parser *prs, char *line, program *pgm, statement **stmt);
 extern void parse_next_token(parser *prs);
 extern char *parser_extract_token_text(parser *prs);
 extern void parser_set_error(parser *prs, const char *fmt, ...);

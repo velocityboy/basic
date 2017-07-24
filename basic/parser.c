@@ -71,6 +71,8 @@ void parser_free(parser *prs)
  */
 int parser_parse_file(parser *prs, FILE *fp, program *pgm)
 {
+    int errs = 0;
+    
     while (1) {
         parser_reset(prs);
         
@@ -82,16 +84,55 @@ int parser_parse_file(parser *prs, FILE *fp, program *pgm)
         if (!prs->line_buffer[0]) {
             continue;
         }
-        
+    
         parser_reset(prs);
         statement *stmt = parse_statement(prs, 0);
-        
+    
         if (stmt) {
             program_insert_statement(pgm, stmt);
         }
     }
 
-    return 0;
+    return errs ? -1 : 0;
+}
+
+/* Parse a statement, returns 1 on success or 0 on failure
+ * If the source is the REPL and the statement is not immediate, then it
+ * will be returned in pstmt
+ */
+int parser_parse_repl_line(parser *prs, char *line, program *pgm, statement **pstmt)
+{
+    *pstmt = NULL;
+    
+    strtrim(line);
+    if (!line[0]) {
+        return 1;
+    }
+    
+    size_t n = strlen(line);
+    if (n >= prs->line_buffer_size) {
+        prs->line_buffer = safe_realloc(prs->line_buffer, n + 1);
+        prs->line_buffer_size = (int)(n + 1);
+    }
+    
+    strncpy(prs->line_buffer, line, prs->line_buffer_size);
+    
+    parser_reset(prs);
+    
+    int repl = !isdigit(prs->line_buffer[0]);
+    statement *stmt = parse_statement(prs, repl);
+    
+    if (stmt) {
+        if (stmt->line >= 0) {
+            program_insert_statement(pgm, stmt);
+        } else {
+            *pstmt = stmt;
+        }
+    } else {
+        return 0;
+    }
+    
+    return 1;
 }
 
 /* Reinitialize the parser for parsing a new statement
