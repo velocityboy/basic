@@ -15,6 +15,7 @@ struct statement
 {
     statement *prev;
     statement *next;
+    char *text;
     int line;
     statement_body *body;
 };

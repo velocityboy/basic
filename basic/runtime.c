@@ -51,6 +51,13 @@ void runtime_free(runtime *rt)
     free(rt);
 }
 
+/* Return the program
+ */
+program *runtime_get_program(runtime *rt)
+{
+    return rt->pgm;
+}
+
 /* Run the program
  */
 void runtime_run(runtime *rt)

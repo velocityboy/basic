@@ -28,6 +28,7 @@
 		7BD7D02B1F252553001EEDB6 /* rem.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0291F252553001EEDB6 /* rem.c */; };
 		7BD7D02E1F252980001EEDB6 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D02C1F252980001EEDB6 /* input.c */; };
 		7BD7D0311F2536B6001EEDB6 /* run.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D02F1F2536B6001EEDB6 /* run.c */; };
+		7BD7D0341F25A242001EEDB6 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0321F25A242001EEDB6 /* list.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -89,6 +90,8 @@
 		7BD7D02D1F252980001EEDB6 /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
 		7BD7D02F1F2536B6001EEDB6 /* run.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = run.c; sourceTree = "<group>"; };
 		7BD7D0301F2536B6001EEDB6 /* run.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = run.h; sourceTree = "<group>"; };
+		7BD7D0321F25A242001EEDB6 /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = list.c; sourceTree = "<group>"; };
+		7BD7D0331F25A242001EEDB6 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +146,8 @@
 				7BD7CFF11F20211C001EEDB6 /* language.txt */,
 				7BD7D0141F22FBAC001EEDB6 /* let.c */,
 				7BD7D0151F22FBAC001EEDB6 /* let.h */,
+				7BD7D0321F25A242001EEDB6 /* list.c */,
+				7BD7D0331F25A242001EEDB6 /* list.h */,
 				7BD7CFEA1F202095001EEDB6 /* main.c */,
 				7BD7CFFE1F202800001EEDB6 /* parser.c */,
 				7BD7CFFF1F202800001EEDB6 /* parser.h */,
@@ -246,6 +251,7 @@
 				7BD7D0281F251E48001EEDB6 /* builtins.c in Sources */,
 				7BD7D0051F2029B6001EEDB6 /* statement.c in Sources */,
 				7BD7D01C1F23FE2D001EEDB6 /* goto.c in Sources */,
+				7BD7D0341F25A242001EEDB6 /* list.c in Sources */,
 				7BD7D0251F2440F9001EEDB6 /* for.c in Sources */,
 				7BD7D00B1F206D6F001EEDB6 /* expression.c in Sources */,
 			);

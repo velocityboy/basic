@@ -191,7 +191,7 @@ statement *parse_statement(parser *prs, int from_repl)
         return NULL;
     }
     
-
+    stmt->text = safe_strdup(prs->line_buffer);
     return stmt;
 }
 

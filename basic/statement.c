@@ -20,6 +20,8 @@ void statement_free(statement *stmt)
     if (stmt == NULL) {
         return;
     }
+    
+    free(stmt->text);
 
     if (stmt->body) {
         stmt->body->free(stmt->body);
