@@ -30,6 +30,7 @@
 		7BD7D0311F2536B6001EEDB6 /* run.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D02F1F2536B6001EEDB6 /* run.c */; };
 		7BD7D0341F25A242001EEDB6 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0321F25A242001EEDB6 /* list.c */; };
 		7BD7D0501F2845C5001EEDB6 /* save.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D04E1F2845C5001EEDB6 /* save.c */; };
+		7BD7D0531F2851F5001EEDB6 /* new.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0511F2851F5001EEDB6 /* new.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +107,8 @@
 		7BD7D0481F25ABA1001EEDB6 /* login.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = login.xcodeproj; path = login/login.xcodeproj; sourceTree = "<group>"; };
 		7BD7D04E1F2845C5001EEDB6 /* save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = save.c; sourceTree = "<group>"; };
 		7BD7D04F1F2845C5001EEDB6 /* save.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = save.h; sourceTree = "<group>"; };
+		7BD7D0511F2851F5001EEDB6 /* new.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = new.c; sourceTree = "<group>"; };
+		7BD7D0521F2851F5001EEDB6 /* new.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = new.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +175,8 @@
 				7BD7D0011F20290D001EEDB6 /* program.c */,
 				7BD7D0291F252553001EEDB6 /* rem.c */,
 				7BD7D02A1F252553001EEDB6 /* rem.h */,
+				7BD7D0511F2851F5001EEDB6 /* new.c */,
+				7BD7D0521F2851F5001EEDB6 /* new.h */,
 				7BD7D02F1F2536B6001EEDB6 /* run.c */,
 				7BD7D0301F2536B6001EEDB6 /* run.h */,
 				7BD7D00F1F21BC77001EEDB6 /* runtime.c */,
@@ -273,6 +278,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BD7D0531F2851F5001EEDB6 /* new.c in Sources */,
 				7BD7D0501F2845C5001EEDB6 /* save.c in Sources */,
 				7BD7D01F1F2408CD001EEDB6 /* scope.c in Sources */,
 				7BD7D0111F21BC77001EEDB6 /* runtime.c in Sources */,

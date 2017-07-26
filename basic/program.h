@@ -12,6 +12,7 @@ struct program
 
 extern program *program_alloc();
 extern void program_free(program *pgm);
+extern void program_new(program *pgm);
 extern void program_insert_statement(program *pgm, statement *stmt);
 
 #endif /* program_h */

@@ -22,6 +22,16 @@ program *program_alloc()
  */
 void program_free(program *pgm)
 {
+    if (pgm) {
+        program_new(pgm);
+    }
+    free(pgm);
+}
+
+/* Free all statements
+ */
+void program_new(program *pgm)
+{
     statement *curr = pgm->head;
     statement *next = NULL;
     
@@ -30,8 +40,6 @@ void program_free(program *pgm)
         statement_free(curr);
         curr = next;
     }
-    
-    free(pgm);
 }
 
 /* Insert a statement
