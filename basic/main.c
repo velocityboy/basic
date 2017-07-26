@@ -4,6 +4,7 @@
 #include "program.h"
 #include "runtime.h"
 #include "statement.h"
+#include "stringutil.h"
 
 static int run_program(const char *name);
 static int run_repl();
@@ -47,8 +48,17 @@ int run_repl()
     program *pgm = program_alloc();
     parser *prs = parser_alloc();
     runtime *rt = runtime_alloc(pgm);
+    int ready = 1;
+    
+    const char *readyfmt = "READY %D %T\n";
     
     while (1) {
+        if (ready) {
+            strformattime(readyfmt, input, sizeof(input));
+            fputs(input, stdout);
+            ready = 0;
+        }
+    
         if (fgets(input, sizeof(input), stdin) == NULL) {
             break;
         }
@@ -60,6 +70,7 @@ int run_repl()
         
         if (stmt != NULL) {
             runtime_execute_statement(rt, stmt);
+            ready++;
         }
     }
     

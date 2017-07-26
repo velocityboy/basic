@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "stringutil.h"
 
@@ -50,3 +51,16 @@ void strunquote(char *s)
         *p = '\0';
     }
 }
+
+/* Pass the format string through strftime with the current
+ * local time
+ */
+void strformattime(const char *fmt, char *out, int outlen)
+{
+    time_t now;
+    time(&now);
+    struct tm *tm = localtime(&now);
+    
+    strftime(out, outlen, fmt, tm);
+}
+
