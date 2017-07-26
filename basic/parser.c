@@ -115,9 +115,10 @@ int parser_parse_repl_line(parser *prs, char *line, program *pgm, statement **ps
         prs->line_buffer_size = (int)(n + 1);
     }
     
-    strncpy(prs->line_buffer, line, prs->line_buffer_size);
-    
     parser_reset(prs);
+    
+    strncpy(prs->line_buffer, line, prs->line_buffer_size);
+    prs->in_line_buffer = (int)strlen(prs->line_buffer);
     
     int repl = !isdigit(prs->line_buffer[0]);
     statement *stmt = parse_statement(prs, repl);
@@ -471,6 +472,53 @@ int parser_expect_end_of_line(parser *prs)
     return 1;
 }
 
+/* On success, return an allocated copy of a parsed filename
+ * On failure, returns NULL
+ * Filenames are 8.3 with alphanumerics. The extension may be omitted
+ */
+char *parser_expect_filename(parser *prs)
+{
+    const int MAX_NAME_LEN = 8;
+    const int MAX_EXT_LEN = 3;
+    
+    int index = prs->token_start;
+    
+    while (index < prs->in_line_buffer &&
+        (index - prs->token_start) < MAX_NAME_LEN &&
+        isalnum(prs->line_buffer[index])) {
+        index++;
+    }
+    
+    int ok = index > prs->token_start;
+    
+    if (ok) {
+        if (index < prs->in_line_buffer && prs->line_buffer[index] == '.') {
+            index++;
+            
+            int ext = index;
+            
+            while (index < prs->in_line_buffer &&
+                (index - ext) < MAX_EXT_LEN &&
+                isalnum(prs->line_buffer[index])) {
+                index++;
+            }
+            
+            if (index < prs->in_line_buffer && isalnum(prs->line_buffer[index])) {
+                ok = 0;
+            }
+        }
+    }
+    
+    if (!ok) {
+        parser_set_error(prs, "FILENAME EXPECTED");
+        return NULL;
+    }
+    
+    prs->token_end = index;
+    char *filename = parser_extract_token_text(prs);
+    parse_next_token(prs);
+    return filename;
+}
 
 /* Parse the next token out of the input line
  */

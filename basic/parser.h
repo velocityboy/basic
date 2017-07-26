@@ -90,6 +90,7 @@ extern int parser_expect_operator(parser *prs, token_type token);
 extern value *parser_expect_number(parser *prs);
 extern char *parser_expect_var(parser *prs);
 extern int parser_expect_line_no(parser *prs, int previous_token);
+extern char *parser_expect_filename(parser *prs);
 extern int parser_expect_end_of_line(parser *prs);
 
 

@@ -14,6 +14,7 @@
 #include "rem.h"
 #include "run.h"
 #include "safemem.h"
+#include "save.h"
 #include "stringutil.h"
 
 #define MAX_ID 10
@@ -32,6 +33,7 @@ static keyword keywords[] =
     { "REM", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &rem_parse },
     { "RUN", KWFL_OK_IN_REPL, &run_parse },
     { "RETURN", KWFL_OK_IN_STMT, &return_parse },
+    { "SAVE", KWFL_OK_IN_REPL, &save_parse },
 
     { NULL, 0 }
 };
