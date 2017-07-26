@@ -244,6 +244,10 @@ int main(int argc, const char * argv[])
             continue;
         }
         
+        char uidstr[20];
+        snprintf(uidstr, sizeof(uidstr), "%d", uid);
+        setenv("UID", uidstr, 1);
+        
         char path[PATH_MAX];
         snprintf(path, sizeof(path), "%s%s", root, ent.home);
         if (chdir(path) == -1) {

@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <stdio.h>
 
 #include "expression.h"
@@ -42,7 +43,10 @@ void save_execute(statement_body *body, runtime *rt)
 {
     save_node *save = (save_node *)body;
     
-    FILE *fp = fopen(save->filename, "w");
+    char fn[PATH_MAX];
+    snprintf(fn, sizeof(fn), "%s.BAS", save->filename);
+    
+    FILE *fp = fopen(fn, "w");
     if (fp == NULL) {
         runtime_set_error(rt, "COULD NOT OPEN %s FOR SAVE", save->filename);
         return;

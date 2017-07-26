@@ -5,6 +5,17 @@
 
 #include "stringutil.h"
 
+/* In place upper string
+ */
+void strupr(char *s)
+{
+    while (*s) {
+        *s = toupper(*s);
+        s++;
+    }
+}
+
+
 /* in place remove leading and trailing whitespace
  */
 void strtrim(char *s)

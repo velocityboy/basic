@@ -2,6 +2,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "cat.h"
 #include "for.h"
 #include "gosub.h"
 #include "goto.h"
@@ -22,6 +23,7 @@
 
 static keyword keywords[] =
 {
+    { "CAT", KWFL_OK_IN_REPL, &cat_parse },
     { "FOR", KWFL_OK_IN_STMT, &for_parse },
     { "GOSUB", KWFL_OK_IN_STMT, &gosub_parse },
     { "GOTO", KWFL_OK_IN_STMT, &goto_parse },

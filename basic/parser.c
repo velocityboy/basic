@@ -479,7 +479,6 @@ int parser_expect_end_of_line(parser *prs)
 char *parser_expect_filename(parser *prs)
 {
     const int MAX_NAME_LEN = 8;
-    const int MAX_EXT_LEN = 3;
     
     int index = prs->token_start;
     
@@ -489,28 +488,13 @@ char *parser_expect_filename(parser *prs)
         index++;
     }
     
-    int ok = index > prs->token_start;
-    
-    if (ok) {
-        if (index < prs->in_line_buffer && prs->line_buffer[index] == '.') {
-            index++;
-            
-            int ext = index;
-            
-            while (index < prs->in_line_buffer &&
-                (index - ext) < MAX_EXT_LEN &&
-                isalnum(prs->line_buffer[index])) {
-                index++;
-            }
-            
-            if (index < prs->in_line_buffer && isalnum(prs->line_buffer[index])) {
-                ok = 0;
-            }
-        }
+    if (index == prs->token_start) {
+        parser_set_error(prs, "FILENAME EXPECTED");
+        return NULL;
     }
     
-    if (!ok) {
-        parser_set_error(prs, "FILENAME EXPECTED");
+    if (index < prs->in_line_buffer && isalnum(prs->line_buffer[index])) {
+        parser_set_error(prs, "FILENAME TOO LONG");
         return NULL;
     }
     

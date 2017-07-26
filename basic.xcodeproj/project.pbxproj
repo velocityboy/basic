@@ -31,6 +31,7 @@
 		7BD7D0341F25A242001EEDB6 /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0321F25A242001EEDB6 /* list.c */; };
 		7BD7D0501F2845C5001EEDB6 /* save.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D04E1F2845C5001EEDB6 /* save.c */; };
 		7BD7D0531F2851F5001EEDB6 /* new.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0511F2851F5001EEDB6 /* new.c */; };
+		7BD7D0561F285A44001EEDB6 /* cat.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0541F285A44001EEDB6 /* cat.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +110,8 @@
 		7BD7D04F1F2845C5001EEDB6 /* save.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = save.h; sourceTree = "<group>"; };
 		7BD7D0511F2851F5001EEDB6 /* new.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = new.c; sourceTree = "<group>"; };
 		7BD7D0521F2851F5001EEDB6 /* new.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = new.h; sourceTree = "<group>"; };
+		7BD7D0541F285A44001EEDB6 /* cat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cat.c; sourceTree = "<group>"; };
+		7BD7D0551F285A44001EEDB6 /* cat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cat.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +150,8 @@
 				7BD7D0131F21C98D001EEDB6 /* TODO.txt */,
 				7BD7D0261F251E48001EEDB6 /* builtins.c */,
 				7BD7D0271F251E48001EEDB6 /* builtins.h */,
+				7BD7D0541F285A44001EEDB6 /* cat.c */,
+				7BD7D0551F285A44001EEDB6 /* cat.h */,
 				7BD7D0091F206D6F001EEDB6 /* expression.c */,
 				7BD7D00A1F206D6F001EEDB6 /* expression.h */,
 				7BD7D0231F2440F9001EEDB6 /* for.c */,
@@ -278,6 +283,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BD7D0561F285A44001EEDB6 /* cat.c in Sources */,
 				7BD7D0531F2851F5001EEDB6 /* new.c in Sources */,
 				7BD7D0501F2845C5001EEDB6 /* save.c in Sources */,
 				7BD7D01F1F2408CD001EEDB6 /* scope.c in Sources */,
