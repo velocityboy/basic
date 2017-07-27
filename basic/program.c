@@ -36,10 +36,12 @@ void program_new(program *pgm)
     statement *next = NULL;
     
     while (curr) {
-        next = curr;
+        next = curr->next;
         statement_free(curr);
         curr = next;
     }
+    pgm->head = NULL;
+    pgm->tail = NULL;
 }
 
 /* Insert a statement

@@ -32,6 +32,7 @@
 		7BD7D0501F2845C5001EEDB6 /* save.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D04E1F2845C5001EEDB6 /* save.c */; };
 		7BD7D0531F2851F5001EEDB6 /* new.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0511F2851F5001EEDB6 /* new.c */; };
 		7BD7D0561F285A44001EEDB6 /* cat.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0541F285A44001EEDB6 /* cat.c */; };
+		7BD7D0591F298A56001EEDB6 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = 7BD7D0571F298A55001EEDB6 /* load.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,8 @@
 		7BD7D0521F2851F5001EEDB6 /* new.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = new.h; sourceTree = "<group>"; };
 		7BD7D0541F285A44001EEDB6 /* cat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cat.c; sourceTree = "<group>"; };
 		7BD7D0551F285A44001EEDB6 /* cat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cat.h; sourceTree = "<group>"; };
+		7BD7D0571F298A55001EEDB6 /* load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load.c; sourceTree = "<group>"; };
+		7BD7D0581F298A55001EEDB6 /* load.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = load.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +174,8 @@
 				7BD7D0151F22FBAC001EEDB6 /* let.h */,
 				7BD7D0321F25A242001EEDB6 /* list.c */,
 				7BD7D0331F25A242001EEDB6 /* list.h */,
+				7BD7D0571F298A55001EEDB6 /* load.c */,
+				7BD7D0581F298A55001EEDB6 /* load.h */,
 				7BD7CFEA1F202095001EEDB6 /* main.c */,
 				7BD7CFFE1F202800001EEDB6 /* parser.c */,
 				7BD7CFFF1F202800001EEDB6 /* parser.h */,
@@ -296,6 +301,7 @@
 				7BD7CFFD1F2025B3001EEDB6 /* stringutil.c in Sources */,
 				7BD7D0001F202800001EEDB6 /* parser.c in Sources */,
 				7BD7D0221F241009001EEDB6 /* gosub.c in Sources */,
+				7BD7D0591F298A56001EEDB6 /* load.c in Sources */,
 				7BD7D00E1F21923F001EEDB6 /* value.c in Sources */,
 				7BD7D02B1F252553001EEDB6 /* rem.c in Sources */,
 				7BD7D0081F2068A4001EEDB6 /* print.c in Sources */,

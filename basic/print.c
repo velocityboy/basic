@@ -100,7 +100,6 @@ void print_free(statement_body *body)
     print_part *curr = node->parts;
     while (curr) {
         print_part *next = curr->next;
-        expression_free(curr->exp);
         part_free(curr);
         curr = next;
     }
@@ -226,6 +225,8 @@ print_part *part_alloc(expression *exp, print_spacing spacing)
  */
 void part_free(print_part *part)
 {
-    expression_free(part->exp);
+    if (part) {
+        expression_free(part->exp);
+    }
     free(part);
 }

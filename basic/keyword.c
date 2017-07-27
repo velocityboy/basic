@@ -11,6 +11,7 @@
 #include "keyword.h"
 #include "let.h"
 #include "list.h"
+#include "load.h"
 #include "new.h"
 #include "print.h"
 #include "rem.h"
@@ -31,6 +32,7 @@ static keyword keywords[] =
     { "INPUT", KWFL_OK_IN_STMT, &input_parse },
     { "LET", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &let_parse },
     { "LIST", KWFL_OK_IN_REPL, &list_parse },
+    { "LOAD", KWFL_OK_IN_REPL, &load_parse },
     { "NEXT", KWFL_OK_IN_STMT, &next_parse },
     { "NEW", KWFL_OK_IN_REPL, &new_parse },
     { "PRINT", KWFL_OK_IN_STMT | KWFL_OK_IN_REPL, &print_parse },
