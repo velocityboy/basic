@@ -1,5 +1,6 @@
 #include "expression.h"
 #include "list.h"
+#include "output.h"
 #include "parser.h"
 #include "program.h"
 #include "runtime.h"
@@ -59,6 +60,7 @@ void list_execute(statement_body *body, runtime *rt)
 {
     list_node *lst = (list_node *)body;
     
+    output *out = runtime_get_output(rt);
     program *pgm = runtime_get_program(rt);
     for (statement *stmt = pgm->head; stmt; stmt = stmt->next) {
         if (stmt->line < lst->first) {
@@ -69,7 +71,7 @@ void list_execute(statement_body *body, runtime *rt)
             break;
         }
         
-        printf("%s\n", stmt->text);
+        output_print(out, "%s\n", stmt->text);
     }
 }
 

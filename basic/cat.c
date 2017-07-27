@@ -4,6 +4,7 @@
 
 #include "cat.h"
 #include "expression.h"
+#include "output.h"
 #include "parser.h"
 #include "runtime.h"
 #include "safemem.h"
@@ -42,9 +43,11 @@ void cat_execute(statement_body *body, runtime *rt)
     if (uidstr != NULL) {
         sscanf(uidstr, "%d", &uid);
     }
+    
+    output *out = runtime_get_output(rt);
    
     if (uid != 0) {
-        printf("\nCATALOG FOR USER %9d\n\n", uid);
+        output_print(out, "\nCATALOG FOR USER %9d\n\n", uid);
     }
     
     DIR *dir = opendir(".");
@@ -72,7 +75,7 @@ void cat_execute(statement_body *body, runtime *rt)
             ext = "";
         }
         
-        printf("%-8s %-3s    ", name, ext);
+        output_print(out, "%-8s %-3s    ", name, ext);
         
         col = (col + 1) % COLS;
         if (col == 0) {

@@ -2,6 +2,7 @@
 
 #include "expression.h"
 #include "input.h"
+#include "output.h"
 #include "parser.h"
 #include "runtime.h"
 #include "safemem.h"
@@ -72,6 +73,8 @@ void input_execute(statement_body *body, runtime *rt)
                 return;
             }
         }
+        
+        output_set_col(runtime_get_output(rt), 0);
     
         size_t len = strlen(input);
         for (; len > 0; len--) {

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "output.h"
 #include "program.h"
 #include "runtime.h"
 #include "safemem.h"
@@ -15,6 +16,7 @@ const int VARCOUNT = 26 * 27;
 struct runtime
 {
     program *pgm;
+    output *out;
     statement *curr_statement;
     value *vars[2 * VARCOUNT];
     statement **statements;
@@ -39,6 +41,7 @@ runtime *runtime_alloc(program *pgm)
 {
     runtime *rt = calloc(1, sizeof(runtime));
     rt->pgm = pgm;
+    rt->out = output_alloc();
     rt->scopes = scope_stack_alloc();
     return rt;
 }
@@ -47,7 +50,10 @@ runtime *runtime_alloc(program *pgm)
  */
 void runtime_free(runtime *rt)
 {
-    scope_stack_free(rt->scopes);
+    if (rt) {
+        output_free(rt->out);
+        scope_stack_free(rt->scopes);
+    }
     free(rt);
 }
 
@@ -56,6 +62,13 @@ void runtime_free(runtime *rt)
 program *runtime_get_program(runtime *rt)
 {
     return rt->pgm;
+}
+
+/* Return the output stream 
+ */
+output *runtime_get_output(runtime *rt)
+{
+    return rt->out;
 }
 
 /* Run the program

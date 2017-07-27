@@ -4,6 +4,7 @@
 
 #include "assert.h"
 #include "expression.h"
+#include "output.h"
 #include "parser.h"
 #include "print.h"
 #include "runtime.h"
@@ -39,7 +40,7 @@ struct print_node
 };
 
 static void print_execute(statement_body *body, runtime *rt);
-static int print_number(const char *fmt, double number);
+static void print_number(output *out, const char *fmt, double number);
 static void print_free(statement_body *body);
 static print_part *part_alloc(expression *exp, print_spacing spacing);
 static void part_free(print_part *part);
@@ -111,8 +112,9 @@ void print_free(statement_body *body)
  */
 void print_execute(statement_body *body, runtime *rt)
 {
+    output *out = runtime_get_output(rt);
     print_node *node = (print_node *)body;
-    int col = 0;
+    
     
     for (print_part *p = node->parts; p; p = p->next) {
         value *val = expression_evaluate(p->exp, rt);
@@ -125,38 +127,31 @@ void print_execute(statement_body *body, runtime *rt)
         
         switch (val->type) {
         case TYPE_BOOLEAN:
-            col += printf("%d", val->boolean);
+            output_print(out, "%d", val->boolean);
             break;
         
         case TYPE_NUMBER:
-            col += print_number("%lf", val->number);
+            print_number(out, "%lf", val->number);
             break;
         
         case TYPE_STRING:
-            col += printf("%s", val->string);
+            output_print(out, "%s", val->string);
             break;
         }
         
         if (p->spacing == SPC_TAB) {
-            int target = ((col + 7) / TAB_SIZE) * TAB_SIZE;
-            if (target == col) {
-                target += TAB_SIZE;
-            }
-            target -= col;
-            while (target--) {
-                putchar(' ');
-            }
+            output_print(out, "\t");
         }
     }
     
-    putchar('\n');
+    output_print(out, "\n");
 }
 
 /* Format and print a number. Mostly we want to get rid of
  * trailing zeroes past the decimal (1.20000 should be 1.2)
  * which printf format strings don't reresent.
  */
-int print_number(const char *fmt, double number)
+void print_number(output *out, const char *fmt, double number)
 {
     char str[32];
     char *strp = str;
@@ -201,13 +196,11 @@ int print_number(const char *fmt, double number)
         }
     }
     
-    len = printf("%s", strp);
+    output_print(out, "%s", strp);
     
     if (strp != str) {
         free(strp);
     }
-    
-    return len;
 }
 
 

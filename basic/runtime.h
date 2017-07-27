@@ -1,6 +1,7 @@
 #ifndef runtime_h
 #define runtime_h
 
+typedef struct output output;
 typedef struct program program;
 typedef struct runtime runtime;
 typedef struct scope scope;
@@ -11,6 +12,7 @@ typedef struct value value;
 extern runtime *runtime_alloc(program *pgm);
 extern void runtime_free(runtime *rt);
 extern program *runtime_get_program(runtime *rt);
+extern output *runtime_get_output(runtime *rt);
 extern void runtime_run(runtime *rt);
 extern int runtime_execute_statement(runtime *rt, statement *stmt);
 extern void runtime_set_error(runtime *rt, const char *fmt, ...);
