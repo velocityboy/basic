@@ -79,6 +79,7 @@ void program_insert_statement(program *pgm, statement *stmt)
     
     /* we are just inserting */
     if (existing) {
+        /* inserting after an existing statement */
         stmt->prev = existing;
         stmt->next = existing->next;
         existing->next = stmt;
@@ -89,12 +90,14 @@ void program_insert_statement(program *pgm, statement *stmt)
             pgm->tail = stmt;
         }
     } else if (pgm->head) {
+        /* inserting before the first statement */
         stmt->prev = NULL;
         stmt->next = pgm->head;
         
         pgm->head = stmt;
         stmt->next->prev = stmt;
     } else {
+        /* inserting and there are no existing statements */
         pgm->head = stmt;
         pgm->tail = stmt;
     }
@@ -115,5 +118,5 @@ statement *program_find_statment(program *pgm, int line)
         }
     }
     
-    return prev;
+    return (stmt && stmt->line == line) ? stmt : prev;
 }

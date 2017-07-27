@@ -6,6 +6,7 @@ typedef struct output output;
 extern output *output_alloc();
 extern void output_free(output *out);
 extern void output_set_col(output *out, int col);
+extern void output_tab_to_col(output *out, int col);
 extern void output_print(output *out, const char *fmt, ...);
 
 #endif /* output_h */

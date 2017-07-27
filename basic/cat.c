@@ -79,12 +79,12 @@ void cat_execute(statement_body *body, runtime *rt)
         
         col = (col + 1) % COLS;
         if (col == 0) {
-            putchar('\n');
+            output_print(out, "\n");
         }
     }
     
     if (col != 0) {
-        putchar('\n');
+        output_print(out, "\n");
     }
     
 }

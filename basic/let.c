@@ -74,10 +74,7 @@ void let_free(statement_body *body)
     
     if (let) {
         free(let->id);
-        
-        if (let->exp) {
-            expression_free(let->exp);
-        }
+        expression_free(let->exp);
     }
 
     free(let);

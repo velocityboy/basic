@@ -648,6 +648,10 @@ void free_binop(expopnode *node)
 {
     binop *bop = (binop *)node;
     
+    if (!bop) {
+        return;
+    }
+    
     if (bop->left) {
         bop->left->free(bop->left);
     }
@@ -724,7 +728,7 @@ void free_unop(expopnode *node)
 {
     unop *uop = (unop *)node;
     
-    if (uop->value) {
+    if (uop && uop->value) {
         uop->value->free(uop->value);
     }
     
@@ -759,7 +763,9 @@ value *eval_literal(expopnode *node, runtime *rt)
 void free_litop(expopnode *node)
 {
     litop *lop = (litop *)node;
-    value_free(lop->literal);
+    if (lop) {
+        value_free(lop->literal);
+    }
     free(node);
 }
 
@@ -779,7 +785,7 @@ expopnode *alloc_literal(value *value)
 value *eval_varref(expopnode *node, runtime *rt)
 {
     varref *var = (varref *)node;
-    return runtime_getvar(rt, var->varname);
+    return value_clone(runtime_getvar(rt, var->varname));
 }
 
 /* free a variable reference
@@ -787,7 +793,9 @@ value *eval_varref(expopnode *node, runtime *rt)
 void free_varref(expopnode *node)
 {
     varref *var = (varref *)node;
-    free(var->varname);
+    if (var) {
+        free(var->varname);
+    }
     free(var);
 }
 
@@ -848,6 +856,9 @@ value *eval_function(expopnode *node, runtime *rt)
 void free_function(expopnode *node)
 {
     funop *fun = (funop *)node;
+    if (fun == NULL) {
+        return;
+    }
     
     free(fun->name);
     

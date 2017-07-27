@@ -3,6 +3,6 @@ x error on extra stuff at end of print statement
 x finish implementing operators and runtime errors
 x variables in runtime
 x LET statement
-- control flow
-- don't run if there are compile errors
+x control flow
+x don't run if there are compile errors
 - factor out equality of values and use a tolerance so ints behave like ints

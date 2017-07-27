@@ -58,6 +58,10 @@ parser *parser_alloc()
  */
 void parser_free(parser *prs)
 {
+    if (prs == NULL) {
+        return;
+    }
+    
     free(prs->error_msg);
     free(prs->line_buffer);
     free(prs);

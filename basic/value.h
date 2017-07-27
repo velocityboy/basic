@@ -7,6 +7,7 @@ typedef struct value value;
 
 enum valuetype
 {
+    TYPE_VOID,
     TYPE_NUMBER,
     TYPE_BOOLEAN,
     TYPE_STRING
@@ -25,6 +26,7 @@ enum valuealloc {
     VAL_COPY,
 };
 
+extern value *value_alloc_void();
 extern value *value_alloc_number(double v);
 extern value *value_alloc_boolean(int v);
 extern value *value_alloc_string(char *s, valuealloc allocated);

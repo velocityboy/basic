@@ -3,6 +3,7 @@
 #include <strings.h>
 
 #include "builtins.h"
+#include "output.h"
 #include "runtime.h"
 #include "value.h"
 
@@ -23,6 +24,7 @@ static value *builtin_cos(runtime *rt, value **argv);
 static value *builtin_ln(runtime *rt, value **argv);
 static value *builtin_log(runtime *rt, value **argv);
 static value *builtin_sin(runtime *rt, value **argv);
+static value *builtin_tab(runtime *rt, value **argv);
 static value *builtin_tan(runtime *rt, value **argv);
 
 static builtin builtins[] =
@@ -32,6 +34,7 @@ static builtin builtins[] =
     { "LN", &builtin_ln, 1, { TYPE_NUMBER } },
     { "LOG", &builtin_log, 1, { TYPE_NUMBER } },
     { "SIN", &builtin_sin, 1, { TYPE_NUMBER } },
+    { "TAB", &builtin_tab, 1, { TYPE_NUMBER } },
     { "TAN", &builtin_tan, 1, { TYPE_NUMBER } },
 
     { NULL, NULL, 0, {}}
@@ -91,6 +94,17 @@ value *builtin_sin(runtime *rt, value **argv)
 {
     return value_alloc_number(sin(argv[0]->number));
 }
+
+/* tab to given position
+ */
+value *builtin_tab(runtime *rt, value **argv)
+{
+    int col = (int)argv[0]->number;
+    output *out = runtime_get_output(rt);
+    output_tab_to_col(out, col);
+    return value_alloc_void();
+}
+
 
 /* Tangent
  */

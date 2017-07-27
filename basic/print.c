@@ -97,6 +97,9 @@ void print_parse(parser *prs, statement *stmt)
 void print_free(statement_body *body)
 {
     print_node *node = (print_node *)body;
+    if (node == NULL) {
+        return;
+    }
     
     print_part *curr = node->parts;
     while (curr) {
@@ -126,6 +129,9 @@ void print_execute(statement_body *body, runtime *rt)
         }
         
         switch (val->type) {
+        case TYPE_VOID:
+            break;
+            
         case TYPE_BOOLEAN:
             output_print(out, "%d", val->boolean);
             break;

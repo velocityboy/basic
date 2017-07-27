@@ -1,6 +1,16 @@
 #include "safemem.h"
 #include "value.h"
 
+/* Create a void value
+ */
+value *value_alloc_void()
+{
+    value *val = safe_calloc(1, sizeof(value));
+    val->type = TYPE_VOID;
+    
+    return val;
+}
+
 /* Create a number value
  */
 value *value_alloc_number(double v)
@@ -55,6 +65,7 @@ void value_free(value *v)
 const char *value_describe_type(valuetype type)
 {
     switch (type) {
+        case TYPE_VOID: return "VOID";
         case TYPE_NUMBER: return "NUMBER";
         case TYPE_STRING: return "STRING";
         case TYPE_BOOLEAN: return "BOOLEAN";

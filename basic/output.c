@@ -106,3 +106,14 @@ void output_tab(output *out)
     }
 }
 
+/* tab the output to the given column, if possible
+ */
+void output_tab_to_col(output *out, int col)
+{
+    while (out->col < col) {
+        putchar(' ');
+        out->col++;
+    }
+}
+
+
