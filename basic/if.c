@@ -25,6 +25,9 @@ void if_parse(parser *prs, statement *stmt)
 {
     if_node *ifn = safe_calloc(1, sizeof(if_node));
     
+    ifn->then_target = -1;
+    ifn->else_target = -1;
+    
     if ((ifn->exp = expression_parse(prs)) == NULL ||
         !parser_expect_id(prs, "THEN") ||
         (ifn->then_target = parser_expect_line_no(prs, 1)) == -1) {

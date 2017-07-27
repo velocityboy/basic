@@ -7,6 +7,7 @@
 #include "safemem.h"
 #include "scope.h"
 #include "statement.h"
+#include "stringutil.h"
 #include "value.h"
 
 typedef struct for_node for_node;
@@ -78,6 +79,8 @@ void for_parse(parser *prs, statement *stmt)
         return;
     }
     
+    strupr(forn->id);
+    
     forn->body.execute = &for_execute;
     forn->body.free = &for_free;
     stmt->body = &forn->body;
@@ -95,6 +98,10 @@ void next_parse(parser *prs, statement *stmt)
             next_free(&next->body);
             return;
         }
+    }
+    
+    if (next->id) {
+        strupr(next->id);
     }
     
     next->body.execute = next_execute;
